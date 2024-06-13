@@ -1,9 +1,11 @@
-from django.http import JsonResponse
-from django.shortcuts import render
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.viewsets import  ModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
+
+from article.models import Article
+
+from article.serializers import ArticleSerializer
 
 
 # Create your views here.
@@ -14,9 +16,11 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 #     })
 
 
-class Article(APIView):
-    authentication_classes = [JWTAuthentication]  # 登录认证
-    permission_classes = [IsAuthenticated]  # 配置了权限类，没登录的就没有权限访问了
+class ArticleViewSet(ModelViewSet):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
+    authentication_classes = [JWTAuthentication]  # 认证方式
+    permission_classes = [IsAuthenticatedOrReadOnly]  # 权限类，匿名用户只读，登录用户可以操作
 
     def get(self, request):
         return Response({'测试测试'})

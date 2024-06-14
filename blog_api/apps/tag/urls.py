@@ -1,11 +1,10 @@
-
 from rest_framework import routers
 from . import views
 
-app_name = "user"
+app_name = "tag"
 
 router = routers.DefaultRouter()
-router.register(r'article', views.ArticleViewSet)
+router.register(r'tag', views.TagViewSet)
 urlpatterns = [
 ]
 

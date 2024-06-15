@@ -43,6 +43,7 @@ class ArticleSerializer(serializers.Serializer):
         return value
 
     def create(self, validated_data):
+        # 视图传递
         author = validated_data.get('author')
         category_id = validated_data.get('category_id')
         tags_ids = validated_data.get('tags_ids')
@@ -52,9 +53,10 @@ class ArticleSerializer(serializers.Serializer):
         intro = validated_data.get('intro')
         cover = validated_data.get('cover')
         is_recommend = validated_data.get('is_recommend')
+
         category = Category.objects.get(pk=category_id)
-        # User.objects.get(pk=author)
         tags = Tag.objects.filter(pk__in=tags_ids)
+
         article = Article.objects.create(title=title, content=content, intro=intro, cover=cover,
                                          is_recommend=is_recommend,
                                          category=category, author=author)

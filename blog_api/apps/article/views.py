@@ -14,7 +14,7 @@ from article.serializers import ArticleSerializer
 
 # Create your views here.
 
-class ArticleViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+class ArticleViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
     authentication_classes = [JWTAuthentication]  # 认证方式

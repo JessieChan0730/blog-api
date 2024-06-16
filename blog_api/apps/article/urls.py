@@ -6,7 +6,6 @@ app_name = "user"
 router = routers.DefaultRouter()
 router.register(r'article', views.ArticleViewSet)
 urlpatterns = [
-
 ]
 
 urlpatterns += router.urls

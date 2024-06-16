@@ -22,7 +22,7 @@ class ArticleSerializer(serializers.Serializer):
     # 以下数据不需要用户上传
     category = CategorySerializer(read_only=True)
     tags = TagSerializer(read_only=True, many=True)
-    author = UserSerializer(required=False)
+    author = UserSerializer(required=False, read_only=True)
     create_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
     update_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
 
@@ -55,23 +55,45 @@ class ArticleSerializer(serializers.Serializer):
         is_recommend = validated_data.get('is_recommend')
 
         category = Category.objects.get(pk=category_id)
-        tags = Tag.objects.filter(pk__in=tags_ids)
-
         article = Article.objects.create(title=title, content=content, intro=intro, cover=cover,
                                          is_recommend=is_recommend,
                                          category=category, author=author)
+
+        tags = Tag.objects.filter(pk__in=tags_ids)
         for tag in tags:
             article.tags.add(tag)
 
         return article
 
     def update(self, instance, validated_data):
+        # 没传递则采用原来的数据
         instance.title = validated_data.get('title', instance.title)
         instance.content = validated_data.get('content', instance.content)
         instance.intro = validated_data.get('intro', instance.intro)
         instance.cover = validated_data.get('cover', instance.cover)
         instance.is_recommend = validated_data.get('is_recommend', instance.is_recommend)
-        instance.tags = validated_data.get('tags', instance.tags)
-        instance.category = validated_data.get('category', instance.category)
+
+        category_id = validated_data.get('category_id', None)
+        if category_id is not None:
+            instance.category = Category.objects.get(pk=category_id)
+
+        tags_ids = validated_data.get('tags_ids', None)
+        if tags_ids is not None:
+            # 获取文章模型中所有的旧的ID
+            model_tags_ids = instance.tags.values_list('id', flat=True)
+            set_tags_ids = set(tags_ids)
+            set_model_tags_ids = set(model_tags_ids)
+            # 求出需要新增的ID集合
+            add_ids = set_tags_ids - set_model_tags_ids
+            # 求出保留的ID
+            kept_ids = set_tags_ids & set_model_tags_ids
+            # 求出需要更新的ID列表
+            update_ids = list(add_ids | kept_ids)
+            # 删除旧的依赖关系
+            instance.tags.clear()
+            # 设置新的依赖关系
+            tags = Tag.objects.filter(id__in=update_ids)
+            instance.tags.set(tags)
+
         instance.save()
         return instance

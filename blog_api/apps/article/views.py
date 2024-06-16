@@ -28,3 +28,17 @@ class ArticleViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         # 传递额外的数据
         serializer.save(author=request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(methods=['POST'], detail=True)
+    def change(self, request: Request, pk):
+        article = Article.objects.filter(pk=pk).first()
+        data = request.data
+        serializer = self.get_serializer(data=data, instance=article, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        if not article:
+            return Response(status=status.HTTP_404_NOT_FOUND, data={
+                'message': '文章不存在'
+            })
+        serializer.save(author=request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -20,6 +20,7 @@ class ArticleViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     authentication_classes = [JWTAuthentication]  # 认证方式
     permission_classes = [IsAuthenticatedOrReadOnly]  # 权限类，匿名用户只读，登录用户可以操作
 
+    # 发表
     @action(methods=['POST'], detail=False)
     def publish(self, request: Request) -> Response:
         data = request.data
@@ -29,6 +30,7 @@ class ArticleViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         serializer.save(author=request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    # 更新
     @action(methods=['POST'], detail=True)
     def change(self, request: Request, pk):
         article = Article.objects.filter(pk=pk).first()
@@ -41,4 +43,23 @@ class ArticleViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
                 'message': '文章不存在'
             })
         serializer.save(author=request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # 推荐文章
+    @action(methods=['GET'], detail=False)
+    def recommend(self, request: Request) -> Response:
+        comm_article = Article.objects.filter(is_recommend=True)
+        serializer = self.get_serializer(instance=comm_article, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # 分类文章
+    @action(methods=['GET'], detail=False)
+    def category(self, request: Request) -> Response:
+        category_id = request.query_params.get('category_id', None)
+        if category_id is None:
+            return Response(data={
+                'message': '请传递分类ID'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        articles = Article.objects.filter(category_id=category_id)
+        serializer = self.get_serializer(instance=articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

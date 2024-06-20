@@ -9,7 +9,7 @@ class UserDetail(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='detail')
     signature = models.CharField(max_length=255, null=True, default="这是一条没有个性的签名")
     hobby = models.JSONField(null=True, default=[])
-    avatar = models.URLField(max_length=255, null=True)
+    avatar = models.URLField(null=True)
     social_contact = models.JSONField(null=True, default={})
     about_me = models.TextField()
 

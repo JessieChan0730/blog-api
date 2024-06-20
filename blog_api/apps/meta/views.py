@@ -30,3 +30,4 @@ class MetaApiView(APIView):
         serializer.is_valid(raise_exception=True)
         # 更新
         serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)

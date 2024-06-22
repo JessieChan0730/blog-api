@@ -6,7 +6,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
+from .pagination import ArticlePagination
 from article.models import Article
 
 from article.serializers import ArticleSerializer
@@ -19,6 +19,7 @@ class ArticleViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     serializer_class = ArticleSerializer
     authentication_classes = [JWTAuthentication]  # 认证方式
     permission_classes = [IsAuthenticatedOrReadOnly]  # 权限类，匿名用户只读，登录用户可以操作
+    pagination_class = ArticlePagination
 
     # 发表
     @action(methods=['POST'], detail=False)

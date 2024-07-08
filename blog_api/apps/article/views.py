@@ -33,7 +33,7 @@ class ArticleViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
 
     # 更新
     @action(methods=['POST'], detail=True)
-    def change(self, request: Request, pk):
+    def change(self, request: Request, pk) -> Response:
         article = Article.objects.filter(pk=pk).first()
         data = request.data
         serializer = self.get_serializer(data=data, instance=article, partial=True)

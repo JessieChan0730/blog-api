@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # 第三方APP
     "rest_framework",
-    'rest_framework_simplejwt',
+    "rest_framework_simplejwt",
+    "drf_yasg",
     # 应用APP
     "meta",
     "user",
@@ -61,6 +62,7 @@ SIMPLE_JWT = {
 }
 # 配置 rest_framework
 REST_FRAMEWORK = {
+
     # 配置全局分页的参数
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     # 'PAGE_SIZE': 4,  # 每页数目

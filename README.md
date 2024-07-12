@@ -22,4 +22,4 @@ python manage.py runserver
 ## 项目介绍
 
 ### 数据库ER图
-![数据库ER图](./images/database_er.jpg)
+![数据库ER图](https://github.com/JessieChan0730/blog-api/blob/main/images/database_er.jpg)

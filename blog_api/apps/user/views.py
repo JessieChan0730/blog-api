@@ -34,6 +34,11 @@ class UserDetailViewSet(viewsets.ModelViewSet):
                 user = User.objects.get(id=user_id)
                 user.set_password(password)
                 user.save()
+                return Response(
+                    data={
+                        'message': '修改密码成功'
+                    }, status=status.HTTP_200_OK
+                )
             except User.DoesNotExist:
                 return Response(data={
                     'message': '用户不存在'

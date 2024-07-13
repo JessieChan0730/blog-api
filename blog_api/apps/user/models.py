@@ -8,9 +8,13 @@ from django.dispatch import receiver
 class UserDetail(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='detail')
     signature = models.CharField(max_length=255, null=True, default="这是一条没有个性的签名")
-    hobby = models.JSONField(null=True, default=[])
+    # 爱好
+    # JSON格式如下 [ { 'img':'icon','title':'标题','content':'内容' } ]
+    hobby = models.JSONField(null=True, default=dict)
     avatar = models.URLField(null=True)
-    social_contact = models.JSONField(null=True, default={})
+    # 社交链接
+    # JSON格式如下 { ‘github’:'https://github.io.com' }
+    social_contact = models.JSONField(null=True, default=dict)
     about_me = models.TextField()
 
 

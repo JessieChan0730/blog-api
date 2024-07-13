@@ -15,10 +15,9 @@ class UserDetailViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]  # 权限类，匿名用户只读，登录用户可以操作
     queryset = UserDetail.objects.all()
 
-    # serializer_class = UserDetailSerializer
-
     # 访问action时，使用ChangePasswordSerializer序列化器
     def get_serializer_class(self):
+        # 如果用户的action是password则使用ChangePasswordSerializer序列化器
         if self.action == 'password':
             return ChangePasswordSerializer
         return UserDetailSerializer

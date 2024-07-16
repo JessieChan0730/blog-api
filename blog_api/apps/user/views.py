@@ -38,27 +38,28 @@ class UserDetailViewSet(GenericViewSet, UpdateModelMixin):
             }, status=status.HTTP_404_NOT_FOUND)
 
         # 修改密码
-        @action(detail=False, methods=['POST'])
-        def password(self, request: Request) -> Response:
-            # 获取用户需要修改的密码
-            password = request.data.get('password', '')
-            if request.user.is_authenticated:
-                user_id = request.user.id
-                try:
-                    user = User.objects.get(id=user_id)
-                    user.set_password(password)
-                    user.save()
-                    return Response(
-                        data={
-                            'message': '修改密码成功'
-                        }, status=status.HTTP_200_OK
-                    )
-                except User.DoesNotExist:
-                    return Response(data={
-                        'message': '用户不存在'
-                    }, status=status.HTTP_400_BAD_REQUEST)
 
-            else:
+    @action(detail=False, methods=['POST'])
+    def password(self, request: Request) -> Response:
+        # 获取用户需要修改的密码
+        password = request.data.get('password', '')
+        if request.user.is_authenticated:
+            user_id = request.user.id
+            try:
+                user = User.objects.get(id=user_id)
+                user.set_password(password)
+                user.save()
+                return Response(
+                    data={
+                        'message': '修改密码成功'
+                    }, status=status.HTTP_200_OK
+                )
+            except User.DoesNotExist:
                 return Response(data={
-                    'message': '您还未通过认证'
-                }, status=status.HTTP_401_UNAUTHORIZED)
+                    'message': '用户不存在'
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+        else:
+            return Response(data={
+                'message': '您还未通过认证'
+            }, status=status.HTTP_401_UNAUTHORIZED)

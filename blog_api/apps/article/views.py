@@ -1,15 +1,15 @@
+from article.models import Article
+from article.serializers import ArticleSerializer
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, UpdateModelMixin
+from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .pagination import ArticlePagination
-from article.models import Article
 
-from article.serializers import ArticleSerializer
+from .pagination import ArticlePagination
 
 
 # Create your views here.
@@ -46,7 +46,7 @@ class ArticleViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         serializer.save(author=request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    # 推荐文章
+    # 获取推荐文章
     @action(methods=['GET'], detail=False)
     def recommend(self, request: Request) -> Response:
         comm_article = Article.objects.filter(is_recommend=True)
@@ -56,6 +56,7 @@ class ArticleViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     # 分类文章
     @action(methods=['GET'], detail=False)
     def category(self, request: Request) -> Response:
+        # query参数
         category_id = request.query_params.get('category_id', None)
         if category_id is None:
             return Response(data={

@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import UserDetail
 
 
 class ChangePasswordSerializer(serializers.Serializer):
@@ -28,3 +27,6 @@ class UserDetailSerializer(serializers.Serializer):
     social_contact = serializers.JSONField(required=False)
     about_me = serializers.CharField(required=False)
     user = UserSerializer(read_only=True)
+
+
+

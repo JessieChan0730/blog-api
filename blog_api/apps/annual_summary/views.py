@@ -20,7 +20,12 @@ class AnnualSummaryViewSet(GenericViewSet):
 
     # 生成
     def create(self, request):
-        pass
+        data = request.data
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        # 保存
+        serializer.save()
+        return Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
     #  查看年报详情
     @swagger_auto_schema(
@@ -49,8 +54,18 @@ class AnnualSummaryViewSet(GenericViewSet):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     # 更新年报
-    def update(self, request):
-        pass
+    def update(self, request, year):
+        annual = AnnualSummary.objects.filter(create_year=year).first()
+        data = request.data
+        if annual is None:
+            return Response(data={
+                "code": status.HTTP_404_NOT_FOUND,
+                "message": "没有该年份的年报"
+            })
+        serializer = self.get_serializer(instance=annual, data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     # http://localhost:8080/api/annual/{year} get:查看某个年份的年报
     # http://localhost:8080/api/annual  post:生成 put:更新 get:获取所有

@@ -30,7 +30,6 @@ class MetaApiView(APIView):
     @swagger_auto_schema(
         request_body=MetaSerializer(),
         responses={status.HTTP_200_OK: MetaSerializer()}
-
     )
     def put(self, request):
         data = request.data

@@ -41,10 +41,11 @@ urlpatterns = [
          name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schemaredoc'),
     # api接口地址
-    path("admin/", admin.site.urls),
+    path('admin', admin.site.urls),
     path('api/', include("user.urls")),
     path('api/', include("article.urls")),
     path('api/', include("tag.urls")),
     path('api/', include("category.urls")),
-    path('api/', include("meta.urls"))
+    path('api/', include("meta.urls")),
+    path('api/', include("annual_summary.urls"))
 ]

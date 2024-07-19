@@ -1,5 +1,9 @@
 from django.urls import path
 
+from .views import AnnualSummaryViewSet
+
 urlpatterns = [
-    path('create')
+    path('annual', AnnualSummaryViewSet.as_view({'post': 'create', 'get': 'list', 'put': 'update'})),
+    # re_path('annual/(?P<year>\d{4})', AnnualSummaryViewSet.as_view({'get': 'look'})),
+    path('annual/<int:year>', AnnualSummaryViewSet.as_view({'get': 'look'})),
 ]

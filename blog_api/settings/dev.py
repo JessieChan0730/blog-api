@@ -9,11 +9,10 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+import datetime
 import os
 import sys
 from pathlib import Path
-
-import datetime
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -59,6 +58,8 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=5),
     # token刷新后的有效时间
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=7),
+    # 自定义token返回的数据
+    "TOKEN_OBTAIN_SERIALIZER": "user.serializer.CustomTokenObtainPairSerializer"
 }
 # 配置 rest_framework
 REST_FRAMEWORK = {

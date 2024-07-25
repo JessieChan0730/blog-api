@@ -1,5 +1,8 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+from blog_api.utils.result_data import ResultData
 
 
 class ChangePasswordSerializer(serializers.Serializer):
@@ -29,4 +32,10 @@ class UserDetailSerializer(serializers.Serializer):
     user = UserSerializer(read_only=True)
 
 
-
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        old_data = super().validate(attrs)
+        old_data['tokenType'] = 'Bearer'
+        old_data['expires'] = (60 * (60 * 1000)) * 24 * 5
+        new_data = ResultData.ok_200(data=old_data)
+        return new_data

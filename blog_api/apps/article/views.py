@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from blog_api.utils.result_data import ResultData
 from .pagination import ArticlePagination
 
 
@@ -51,7 +52,7 @@ class ArticleViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     def recommend(self, request: Request) -> Response:
         comm_article = Article.objects.filter(is_recommend=True)
         serializer = self.get_serializer(instance=comm_article, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(data=ResultData.ok_200(data=serializer.data, msg="获取推荐文章成功"), status=status.HTTP_200_OK)
 
     # 分类文章
     @action(methods=['GET'], detail=False)

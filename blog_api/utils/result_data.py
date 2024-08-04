@@ -22,3 +22,7 @@ class ResultData:
     @staticmethod
     def not_found_404(msg='暂时未找到资源'):
         return ResultData.generate_response(404, msg, {})
+
+    @staticmethod
+    def server_bad_500(msg='服务器内部错误，请稍后重试'):
+        return ResultData.generate_response(500, msg, {})

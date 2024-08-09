@@ -12,6 +12,10 @@ class ResultData:
         return ResultData.generate_response(200, msg, data)
 
     @staticmethod
+    def not_content_204(msg='删除成功'):
+        return ResultData.generate_response(204, msg, None)
+
+    @staticmethod
     def unauthorized_401(msg='暂无权限'):
         return ResultData.generate_response(401, msg, {})
 

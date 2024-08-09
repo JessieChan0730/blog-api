@@ -25,6 +25,10 @@ class ResultMiddleware(MiddlewareMixin):
 
         if response.status_code == 200:
             return JsonResponse(status=response.status_code, data=ResultData.ok_200(response.data))
+        elif response.status_code == 201:
+            return JsonResponse(status=response.status_code, data=ResultData.ok_200(data=response.data, msg="创建成功"))
+        elif response.status_code == 204:
+            return JsonResponse(status=200, data=ResultData.not_content_204())
         elif response.status_code == 404:
             return JsonResponse(status=response.status_code, data=ResultData.not_found_404())
         elif response.status_code == 401:

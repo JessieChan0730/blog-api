@@ -13,7 +13,10 @@ class TagSerializer(serializers.Serializer):
         return tag
 
     def update(self, instance, validated_data):
-        instance.name = validated_data.get("name",instance.name)
+        instance.name = validated_data.get("name", instance.name)
         instance.save()
         return instance
 
+
+class DeleteMultiple(serializers.Serializer):
+    ids = serializers.ListField(child=serializers.IntegerField(), required=True, allow_empty=False, min_length=1)

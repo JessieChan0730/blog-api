@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # 第三方APP
     "rest_framework",
     "rest_framework_simplejwt",
+    "django_filters",
     "drf_yasg",
     # 应用APP
     "meta",
@@ -64,9 +65,6 @@ SIMPLE_JWT = {
 # 配置 rest_framework
 REST_FRAMEWORK = {
 
-    # 配置全局分页的参数
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    # 'PAGE_SIZE': 4,  # 每页数目
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication'
     ],

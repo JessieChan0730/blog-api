@@ -159,3 +159,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'static/media'
+
+BLOG_SETTINGS = {
+    # 主页分类展示个数
+    "HOME_DISPLAY": 4
+}

@@ -55,6 +55,7 @@ INSTALLED_APPS = [
 ]
 # JWT配置
 SIMPLE_JWT = {
+    'TOKEN_EXPIRES': (60 * (60 * 1000)) * 24 * 5,
     # token有效时长
     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=5),
     # token刷新后的有效时间
@@ -139,7 +140,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "zh-Hans"
 
 TIME_ZONE = "UTC"
 

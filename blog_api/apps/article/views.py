@@ -1,5 +1,3 @@
-from article.models import Article
-from article.serializers import ArticleSerializer
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
@@ -9,8 +7,10 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from blog_api.utils.result_data import ResultData
+from blog_api.utils.result.format import render_data
+from .models import Article
 from .pagination import ArticlePagination
+from .serializers import ArticleSerializer
 
 
 # Create your views here.
@@ -52,7 +52,7 @@ class ArticleViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     def recommend(self, request: Request) -> Response:
         comm_article = Article.objects.filter(is_recommend=True)
         serializer = self.get_serializer(instance=comm_article, many=True)
-        return Response(data=ResultData.ok_200(data=serializer.data, msg="获取推荐文章成功"), status=status.HTTP_200_OK)
+        return Response(data=render_data(code=200, msg="获取文章列表成功", data=serializer.data), status=status.HTTP_200_OK)
 
     # 分类文章
     @action(methods=['GET'], detail=False)

@@ -6,10 +6,10 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from user.models import UserDetail
-from user.serializer import UserDetailSerializer, ChangePasswordSerializer
 
-from blog_api.utils.result_data import ResultData
+from blog_api.utils.result.format import render_data
+from .models import UserDetail
+from .serializer import UserDetailSerializer, ChangePasswordSerializer
 
 
 class UserDetailViewSet(GenericViewSet, UpdateModelMixin):
@@ -31,9 +31,14 @@ class UserDetailViewSet(GenericViewSet, UpdateModelMixin):
         user = UserDetail.objects.first()
         if user is not None:
             serializer = self.get_serializer(user)
-            return Response(data=ResultData.ok_200(data=serializer.data), status=status.HTTP_200_OK)
+            # return Response(data=ResultData.ok_200(data=serializer.data), status=status.HTTP_200_OK)
+            return Response(
+                data=render_data(code=status.HTTP_200_OK, data=serializer.data),
+                status=status.HTTP_200_OK)
         else:
-            return Response(data=ResultData.bad_request_400(msg="该用户不存在"), status=status.HTTP_404_NOT_FOUND)
+            return Response(data=
+                            render_data(code=status.HTTP_404_NOT_FOUND),
+                            status=status.HTTP_404_NOT_FOUND)
 
         # 修改密码
 

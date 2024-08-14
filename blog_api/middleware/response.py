@@ -2,8 +2,8 @@
 
 from django.http import JsonResponse
 from django.utils.deprecation import MiddlewareMixin
-from .result.format import render_data
-from .result.settings import CodeType
+from blog_api.utils.result.format import render_data
+from blog_api.utils.result.settings import CodeType
 
 '''
 响应消息格式化中间件

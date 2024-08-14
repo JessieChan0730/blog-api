@@ -82,7 +82,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "blog_api.utils.middleware.ResultMiddleware",
+    "blog_api.middleware.exception.ExceptionHandlerMiddleware",
+    "blog_api.middleware.response.ResultMiddleware"
 ]
 
 ROOT_URLCONF = "blog_api.urls"

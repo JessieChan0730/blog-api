@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # 第三方APP
+    "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt",
     "django_filters",
@@ -75,6 +76,7 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -160,9 +162,20 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'static/media'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 BLOG_SETTINGS = {
     # 主页分类展示个数
     "HOME_DISPLAY": 4
 }
+
+# DENY ：表示该页面不允许在 frame 中展示，即便是在相同域名的页面中嵌套也不允许
+# SAMEORIGIN ：表示该页面可以在相同域名页面的 frame 中展示
+# ALLOW-FROM uri ：表示该页面可以在指定来源的 frame 中展示 (测试阶段使用)
+X_FRAME_OPTIONS = "ALLOW-FROM"
+
+# 允许跨域的地址,测试使用，线上建议关闭
+CORS_ORIGIN_WHITELIST = [
+    "http://127.0.0.1:3000",
+    "http://localhost:3000",
+]

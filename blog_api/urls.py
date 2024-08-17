@@ -48,6 +48,6 @@ urlpatterns = [
                   path('api/', include("article.urls")),
                   path('api/', include("tag.urls")),
                   path('api/', include("category.urls")),
-                  path('api/', include("meta.urls")),
+                  path('api/', include("settings.urls")),
                   path('api/', include("annual_summary.urls"))
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     "django_filters",
     "drf_yasg",
     # 应用APP
-    "meta",
+    "settings",
     "user",
     "article",
     "category",

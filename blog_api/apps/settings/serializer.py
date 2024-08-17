@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import BlogMeta
+from .models import BlogSettings
 
 
 class MetaSerializer(serializers.Serializer):
@@ -12,10 +12,10 @@ class MetaSerializer(serializers.Serializer):
     def create(self, validated_data):
         title = validated_data.get("title", None)
         cover = validated_data.get("cover", None)
-        meta = BlogMeta.objects.first()
+        meta = BlogSettings.objects.first()
         # 不存在就创建
         if meta is None:
-            meta = BlogMeta(title=title, cover=cover)
+            meta = BlogSettings(title=title, cover=cover)
             meta.save()
             return meta
         if title:

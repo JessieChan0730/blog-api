@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from .models import BlogMeta
+from .models import BlogSettings
 from .serializer import MetaSerializer
 
 
@@ -20,7 +20,7 @@ class MetaApiView(APIView):
         responses={status.HTTP_200_OK: MetaSerializer()}
     )
     def get(self, request):
-        blog_meta = BlogMeta.objects.first()
+        blog_meta = BlogSettings.objects.first()
         if not blog_meta:
             raise APIException("博客信息不存在")
         serializer = MetaSerializer(instance=blog_meta)

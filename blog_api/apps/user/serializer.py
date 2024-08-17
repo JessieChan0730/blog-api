@@ -1,10 +1,12 @@
 from django.conf import settings
 from django.contrib.auth.models import User
+from jsonschema.exceptions import ValidationError
+from jsonschema.validators import validate
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from blog_api.utils.result.format import render_data
-
+from .const import json_schema
 
 class ChangePasswordSerializer(serializers.Serializer):
     #  修改密码
@@ -25,12 +27,29 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserDetailSerializer(serializers.Serializer):
-    signature = serializers.CharField(max_length=255, required=False)
-    hobby = serializers.JSONField(required=False)
-    avatar = serializers.URLField(required=False)
-    social_contact = serializers.JSONField(required=False)
-    about_me = serializers.CharField(required=False)
-    user = UserSerializer(read_only=True)
+    nickname = serializers.CharField(required=False,min_length=1, max_length=15)
+    signature = serializers.CharField(max_length=255,min_length=1, required=False)
+    avatar = serializers.ImageField(required=False, label="图片", use_url=True, error_messages={
+        'invalid': '图片参数错误'
+    })
+    about_me = serializers.CharField(min_length=1,required=False)
+    more_info = serializers.JSONField(required=False)
+
+    def validate_more_info(self, value):
+        try:
+            validate(value, json_schema)
+            return value
+        except ValidationError as e:
+            raise serializers.ValidationError(e)
+
+    def update(self, instance, validated_data):
+        instance.nickname = validated_data.get('nickname', instance.nickname)
+        instance.avatar = validated_data.get('avatar', instance.avatar)
+        instance.signature = validated_data.get('signature', instance.signature)
+        instance.about_me = validated_data.get('about_me', instance.about_me)
+        instance.more_info = validated_data.get('more_info', instance.more_info)
+        instance.save()
+        return instance
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):

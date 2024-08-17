@@ -164,11 +164,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-BLOG_SETTINGS = {
-    # 主页分类展示个数
-    "HOME_DISPLAY": 4
-}
-
 # DENY ：表示该页面不允许在 frame 中展示，即便是在相同域名的页面中嵌套也不允许
 # SAMEORIGIN ：表示该页面可以在相同域名页面的 frame 中展示
 # ALLOW-FROM uri ：表示该页面可以在指定来源的 frame 中展示 (测试阶段使用)
@@ -179,3 +174,36 @@ CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1:3000",
     "http://localhost:3000",
 ]
+
+# 博客设置
+BLOG_SETTINGS = {
+    # 主页分类展示个数
+    "HOME_DISPLAY": 4
+}
+
+# 管理员信息设置
+MANAGER_SETTINGS = {
+    "nickname": "系统管理员",
+    "signature": "因为没有个性，所以没有签名",
+    "about_me": "无",
+    "hobby": [
+        {
+            "name": "运动",
+            "detail": "我爱运动"
+        },
+        {
+            "name": "音乐",
+            "detail": "我爱音乐"
+        },
+        {
+            "name": "美术",
+            "detail": "我爱美术"
+        },
+    ],
+    "media": {
+        "github": "Null",
+        "bilibili": "Null",
+        "csdn": "Null",
+        "tiktok": "Null",
+    }
+}

@@ -1,18 +1,17 @@
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.mixins import UpdateModelMixin
+from rest_framework.exceptions import APIException
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from blog_api.utils.result.format import render_data
 from .models import UserDetail
 from .serializer import UserDetailSerializer, ChangePasswordSerializer
 
 
-class UserDetailViewSet(GenericViewSet, UpdateModelMixin):
+class UserDetailViewSet(GenericViewSet):
     authentication_classes = [JWTAuthentication]  # 认证方式
     # permission_classes = [IsAuthenticatedOrReadOnly]  # 权限类，匿名用户只读，登录用户可以操作
     queryset = UserDetail.objects.all()
@@ -33,15 +32,24 @@ class UserDetailViewSet(GenericViewSet, UpdateModelMixin):
             serializer = self.get_serializer(user)
             # return Response(data=ResultData.ok_200(data=serializer.data), status=status.HTTP_200_OK)
             return Response(
-                data=render_data(code=status.HTTP_200_OK, data=serializer.data),
+                data=serializer.data,
                 status=status.HTTP_200_OK)
         else:
-            return Response(data=
-                            render_data(code=status.HTTP_404_NOT_FOUND),
-                            status=status.HTTP_404_NOT_FOUND)
+            raise APIException('用户被删除了')
 
-        # 修改密码
+    # 更新用户信息
+    @action(detail=False, methods=['PUT'])
+    def change(self, request: Request) -> Response:
+        data = request.data
+        instance = self.get_queryset().first()
+        if instance is None:
+            raise APIException('用户详细数据不存在')
+        serializer = self.get_serializer(instance=instance, data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
+    # 修改密码
     @action(detail=False, methods=['POST'])
     def password(self, request: Request) -> Response:
         # 获取用户需要修改的密码

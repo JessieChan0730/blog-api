@@ -6,5 +6,5 @@ from rest_framework.pagination import PageNumberPagination
 # http://127.0.0.1/article/?page=1&page_size=2
 class ArticlePagination(PageNumberPagination):
     page_size_query_param = 'page_size'
-    page_size = 1
-    max_page_size = 10
+    page_size = 2
+    max_page_size = 4

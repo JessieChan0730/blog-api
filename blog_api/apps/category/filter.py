@@ -7,10 +7,7 @@ class CategoryFilter(filters.FilterSet):
     name = filters.CharFilter(method='filter_by_name')
 
     def filter_by_name(self, queryset, name, value):
-        query = queryset.filter(name__icontains=value).query
-        print(query)
         if value:
-
             return queryset.filter(name__icontains=value)
         return queryset
 

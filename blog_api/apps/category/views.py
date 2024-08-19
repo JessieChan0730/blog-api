@@ -12,7 +12,6 @@ from .serializer import CategorySerializer, DeleteMultiple
 
 # Create your views here.
 class CategoryViewSet(viewsets.ModelViewSet):
-    # serializer_class = CategorySerializer
     pagination_class = CategoryPagination
     filter_backends = (DjangoFilterBackend,)
     queryset = Category.objects.all()
@@ -38,3 +37,9 @@ class CategoryViewSet(viewsets.ModelViewSet):
         ids = serializer.data.get('ids', [])
         Category.objects.filter(id__in=ids).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(methods=['get'], detail=False)
+    def all(self, request):
+        all_category = self.get_queryset().all()
+        serializer = self.get_serializer(all_category, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

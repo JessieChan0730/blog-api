@@ -1,25 +1,25 @@
-from django.contrib.auth.models import User
-from rest_framework import serializers
 from article.models import Article
+from category.models import Category
 from category.serializer import CategorySerializer
+from rest_framework import serializers
+from tag.models import Tag
 from tag.serializer import TagSerializer
 from user.serializer import UserSerializer
 
-from category.models import Category
 
-from tag.models import Tag
-
-
-class ArticleSerializer(serializers.Serializer):
-    title = serializers.CharField(min_length=1, max_length=40, required=True, label='标题')
-    content = serializers.CharField(allow_blank=False, allow_null=False, required=True, label='内容')
-    intro = serializers.CharField(allow_blank=False, allow_null=False, required=True, label='简介')
-    cover = serializers.StringRelatedField(label='封面')
-    is_recommend = serializers.BooleanField(default=False, required=False, label='是否推荐')
+class ArticleCreateSerializer(serializers.Serializer):
+    id = serializers.IntegerField(min_value=1, read_only=True)
+    title = serializers.CharField(min_length=1, max_length=40, label='标题')
+    content = serializers.CharField(allow_blank=False, allow_null=False, label='内容')
+    intro = serializers.CharField(allow_blank=False, allow_null=False, max_length=200, label='简介')
+    cover = serializers.ImageField(label='封面', use_url=True, required=False)
+    recommend = serializers.BooleanField(default=False, required=False, label='是否推荐')
+    visible = serializers.BooleanField(label='是否可见', required=False, default=True)
     category_id = serializers.IntegerField(min_value=1, write_only=True)
     tags_ids = serializers.ListField(min_length=1, allow_empty=False, allow_null=False, write_only=True)
 
     # 以下数据不需要用户上传
+
     category = CategorySerializer(read_only=True)
     tags = TagSerializer(read_only=True, many=True)
     author = UserSerializer(required=False, read_only=True)
@@ -52,11 +52,11 @@ class ArticleSerializer(serializers.Serializer):
         content = validated_data.get('content')
         intro = validated_data.get('intro')
         cover = validated_data.get('cover')
-        is_recommend = validated_data.get('is_recommend')
+        recommend = validated_data.get('recommend')
 
         category = Category.objects.get(pk=category_id)
         article = Article.objects.create(title=title, content=content, intro=intro, cover=cover,
-                                         is_recommend=is_recommend,
+                                         recommend=recommend,
                                          category=category, author=author)
 
         tags = Tag.objects.filter(pk__in=tags_ids)
@@ -71,7 +71,7 @@ class ArticleSerializer(serializers.Serializer):
         instance.content = validated_data.get('content', instance.content)
         instance.intro = validated_data.get('intro', instance.intro)
         instance.cover = validated_data.get('cover', instance.cover)
-        instance.is_recommend = validated_data.get('is_recommend', instance.is_recommend)
+        instance = validated_data.get('recommend', instance.recommend)
 
         category_id = validated_data.get('category_id', None)
         if category_id is not None:

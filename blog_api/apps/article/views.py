@@ -1,4 +1,5 @@
-from rest_framework import status
+from django_filters.rest_framework.backends import DjangoFilterBackend
+from rest_framework import status, filters
 from rest_framework.decorators import action
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -10,17 +11,21 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from blog_api.utils.result.format import render_data
 from .models import Article
 from .pagination import ArticlePagination
-from .serializers import ArticleSerializer
-
+from .serializers import ArticleCreateSerializer
+from .filter import  CategoryFilter
 
 # Create your views here.
 
 class ArticleViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = Article.objects.all()
-    serializer_class = ArticleSerializer
+    serializer_class = ArticleCreateSerializer
     authentication_classes = [JWTAuthentication]  # 认证方式
     permission_classes = [IsAuthenticatedOrReadOnly]  # 权限类，匿名用户只读，登录用户可以操作
     pagination_class = ArticlePagination
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter ,DjangoFilterBackend,)
+    search_fields = ('title', )
+    ordering_fields = ('create_date','update_date',)
+    filterset_class = CategoryFilter
 
     # 发表
     @action(methods=['POST'], detail=False)

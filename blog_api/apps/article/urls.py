@@ -1,7 +1,7 @@
 from rest_framework import routers
 from . import views
 
-app_name = "user"
+app_name = "article"
 
 router = routers.DefaultRouter()
 router.register(r'article', views.ArticleViewSet)

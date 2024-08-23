@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import APIException
+from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
@@ -13,7 +14,7 @@ from .serializer import UserDetailSerializer, ChangePasswordSerializer
 
 class UserDetailViewSet(GenericViewSet):
     authentication_classes = [JWTAuthentication]  # 认证方式
-    # permission_classes = [IsAuthenticatedOrReadOnly]  # 权限类，匿名用户只读，登录用户可以操作
+    permission_classes = [AllowAny]  # 权限类，匿名用户只读，登录用户可以操作
     queryset = UserDetail.objects.all()
 
     # 访问action时，使用ChangePasswordSerializer序列化器

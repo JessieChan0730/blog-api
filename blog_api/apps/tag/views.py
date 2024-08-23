@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -29,3 +30,12 @@ class TagViewSet(viewsets.ModelViewSet):
         ids = serializer.data.get('ids', [])
         Tag.objects.filter(id__in=ids).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(methods=['get'], detail=False)
+    def search(self, request: Request):
+        name = request.query_params.get('name', '')
+        tags = self.get_queryset().filter(name__icontains=name)
+        if not tags:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = self.get_serializer(tags, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

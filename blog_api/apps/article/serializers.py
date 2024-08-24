@@ -1,3 +1,4 @@
+import regex
 from category.models import Category
 from category.serializer import CategorySerializer
 from rest_framework import serializers
@@ -50,7 +51,8 @@ class ArticleCreateSerializer(serializers.Serializer):
         tags_ids = validated_data.get('tags_ids')
 
         title = validated_data.get('title')
-        content = validated_data.get('content')
+        # TODO 去除表情包
+        content = regex.sub(r'\p{Emoji}+', '-', validated_data.get('content'))
         intro = validated_data.get('intro')
         cover_url = validated_data.get('cover_url')
         recommend = validated_data.get('recommend')
@@ -69,7 +71,8 @@ class ArticleCreateSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         # 没传递则采用原来的数据
         instance.title = validated_data.get('title', instance.title)
-        instance.content = validated_data.get('content', instance.content)
+        # TODO 去除表情包
+        instance.content = regex.sub(r'\p{Emoji}+', '-', validated_data.get('content', instance.content))
         instance.intro = validated_data.get('intro', instance.intro)
         instance.cover_url = validated_data.get('cover_url', instance.cover_url)
         instance = validated_data.get('recommend', instance.recommend)

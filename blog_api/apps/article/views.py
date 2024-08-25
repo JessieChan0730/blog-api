@@ -1,7 +1,7 @@
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import status, filters
 from rest_framework.decorators import action
-from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, CreateModelMixin
+from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, CreateModelMixin, DestroyModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -12,14 +12,14 @@ from blog_api.utils.result.format import render_data
 from .filter import CategoryFilter
 from .models import Article, ImageContent, Cover
 from .pagination import ArticlePagination
-from .serializers import ArticleCreateSerializer, ImageContentSerializer, CoverSerializer
+from .serializers import ArticleSerializer, ImageContentSerializer, CoverSerializer
 
 
 # Create your views here.
 
-class ArticleViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
+class ArticleViewSet(ListModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet):
     queryset = Article.objects.all()
-    serializer_class = ArticleCreateSerializer
+    serializer_class = ArticleSerializer
     authentication_classes = [JWTAuthentication]  # 认证方式
     permission_classes = [IsAuthenticatedOrReadOnly]  # 权限类，匿名用户只读，登录用户可以操作
     pagination_class = ArticlePagination
@@ -27,6 +27,11 @@ class ArticleViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     search_fields = ('title',)
     ordering_fields = ('create_date', 'update_date',)
     filterset_class = CategoryFilter
+
+    # def get_serializer_class(self):
+    #     if self.action == 'modify':
+    #         return ArticleUpdateSerializer
+    #     return ArticleCreateSerializer
 
     # 发表
     @action(methods=['post'], detail=False)
@@ -40,16 +45,15 @@ class ArticleViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
 
     # 更新
     @action(methods=['post'], detail=True)
-    def change(self, request: Request) -> Response:
-        article = self.get_object()
+    def modify(self, request: Request, pk) -> Response:
+        article = self.get_queryset().filter(pk=pk).first()
         data = request.data
-        serializer = self.get_serializer(data=data, instance=article, partial=True)
-        serializer.is_valid(raise_exception=True)
-
         if not article:
             return Response(status=status.HTTP_404_NOT_FOUND, data={
                 'message': '文章不存在'
             })
+        serializer = self.get_serializer(data=data, instance=article, partial=True)
+        serializer.is_valid(raise_exception=True)
         serializer.save(author=request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -61,7 +65,7 @@ class ArticleViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         return Response(data=render_data(code=200, msg="获取文章列表成功", data=serializer.data),
                         status=status.HTTP_200_OK)
 
-    # 分类文章
+    # 查询分类下的文章
     @action(methods=['GET'], detail=False)
     def category(self, request: Request) -> Response:
         # query参数

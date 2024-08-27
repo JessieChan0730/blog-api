@@ -1,16 +1,16 @@
 from django_filters.rest_framework.backends import DjangoFilterBackend
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.exceptions import APIException
 from rest_framework.mixins import ListModelMixin, DestroyModelMixin, CreateModelMixin, UpdateModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from .filter import FriendLinkFilter
-from .models import FriendLink
+from .models import FriendLink, FriendLinkStatement
 from .pagination import FriendLinkPagination
-from .serializer import FriendLinkSerializer, DeleteMultiple
+from .serializer import FriendLinkSerializer, DeleteMultiple, FriendLinkStatementSerializer
 
 
 # Create your views here.
@@ -28,10 +28,10 @@ class FriendLinksViewSet(ListModelMixin, UpdateModelMixin, DestroyModelMixin, Cr
             return DeleteMultiple
         return FriendLinkSerializer
 
-    @swagger_auto_schema(
-        request_body=DeleteMultiple(),
-        responses={}
-    )
+    # @swagger_auto_schema(
+    #     request_body=DeleteMultiple(),
+    #     responses={}
+    # )
     # TODO 定义一个公共的 viewSet
     @action(methods=['delete'], detail=False)
     def multiple(self, request):
@@ -40,3 +40,28 @@ class FriendLinksViewSet(ListModelMixin, UpdateModelMixin, DestroyModelMixin, Cr
         ids = serializer.data.get('ids', [])
         self.queryset.filter(id__in=ids).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class FriendLinkStatementViewSet(GenericViewSet):
+    queryset = FriendLinkStatement.objects.all()
+    serializer_class = FriendLinkStatementSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    @action(methods=['get'], detail=False)
+    def show(self, request):
+        statement_ins = self.queryset.first()
+        if not statement_ins:
+            raise APIException("友链页面信息不存在")
+        serializer = self.get_serializer(instance=statement_ins)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(methods=['put'], detail=False)
+    def change(self, request):
+        data = request.data
+        statement_ins = self.queryset.first()
+        if not statement_ins:
+            raise APIException("友链页面信息不存在")
+        serializer = self.get_serializer(instance=statement_ins,data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)

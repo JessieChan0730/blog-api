@@ -1,3 +1,5 @@
+import re
+
 from rest_framework import serializers
 
 from .models import FriendLink
@@ -44,3 +46,22 @@ class FriendLinkSerializer(serializers.Serializer):
 # TODO 抽取到公共APP中
 class DeleteMultiple(serializers.Serializer):
     ids = serializers.ListField(child=serializers.IntegerField(), required=True, allow_empty=False, min_length=1)
+
+
+class FriendLinkStatementSerializer(serializers.Serializer):
+    statement = serializers.CharField(required=True)
+
+    def update(self, instance, validated_data):
+        clearn_emoji = re.compile(u'['
+                                  u'\U0001F300-\U0001F5FF'  # 杂项符号和象形图  
+                                  u'\U0001F600-\U0001F64F'  # 表情与情感  
+                                  u'\U0001F680-\U0001F6FF'  # 运输和地图符号  
+                                  u'\u2600-\u26FF'  # 杂项符号  
+                                  u'\u2700-\u27BF'  # 括号、括号装饰符等  
+                                  # ... 可以根据需要添加更多范围  
+                                  u']+')
+        statement = re.sub(clearn_emoji, '', validated_data.get('statement'))
+        instance.statement = statement
+        # instance.statement = validated_data.get('statement')
+        instance.save()
+        return instance

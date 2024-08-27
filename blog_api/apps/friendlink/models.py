@@ -20,3 +20,10 @@ class FriendLink(models.Model):
 
     class Meta:
         db_table = 'friendlink'
+
+
+class FriendLinkStatement(models.Model):
+    statement = models.TextField()
+
+    class Meta:
+        db_table = 'fl_statement'

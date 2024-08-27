@@ -1,4 +1,5 @@
-import regex
+import re
+
 from category.models import Category
 from category.serializer import CategorySerializer
 from rest_framework import serializers
@@ -52,7 +53,15 @@ class ArticleSerializer(serializers.Serializer):
 
         title = validated_data.get('title')
         # TODO 去除表情包
-        content = regex.sub(r'\p{Emoji}+', '-', validated_data.get('content'))
+        clearn_emoji = re.compile(u'['
+                                  u'\U0001F300-\U0001F5FF'  # 杂项符号和象形图  
+                                  u'\U0001F600-\U0001F64F'  # 表情与情感  
+                                  u'\U0001F680-\U0001F6FF'  # 运输和地图符号  
+                                  u'\u2600-\u26FF'  # 杂项符号  
+                                  u'\u2700-\u27BF'  # 括号、括号装饰符等  
+                                  # ... 可以根据需要添加更多范围  
+                                  u']+')
+        content = re.sub(clearn_emoji, '', validated_data.get('content'))  # 正则匹配，将表情符合替换为空''
         intro = validated_data.get('intro')
         cover_url = validated_data.get('cover_url')
         visible = validated_data.get('visible')
@@ -61,7 +70,7 @@ class ArticleSerializer(serializers.Serializer):
         category = Category.objects.get(pk=category_id)
         article = Article.objects.create(title=title, content=content, intro=intro, cover_url=cover_url,
                                          recommend=recommend,
-                                         category=category, author=author,visible=visible)
+                                         category=category, author=author, visible=visible)
 
         tags = Tag.objects.filter(pk__in=tags_ids)
         for tag in tags:
@@ -73,7 +82,15 @@ class ArticleSerializer(serializers.Serializer):
         # 没传递则采用原来的数据
         instance.title = validated_data.get('title', instance.title)
         # TODO 去除表情包
-        instance.content = regex.sub(r'\p{Emoji}+', '-', validated_data.get('content', instance.content))
+        clearn_emoji = re.compile(u'['
+                                  u'\U0001F300-\U0001F5FF'  # 杂项符号和象形图  
+                                  u'\U0001F600-\U0001F64F'  # 表情与情感  
+                                  u'\U0001F680-\U0001F6FF'  # 运输和地图符号  
+                                  u'\u2600-\u26FF'  # 杂项符号  
+                                  u'\u2700-\u27BF'  # 括号、括号装饰符等  
+                                  # ... 可以根据需要添加更多范围  
+                                  u']+')
+        instance.content = re.sub(clearn_emoji, '', validated_data.get('content'))  # 正则匹配，将表情符合替换为空''
         instance.intro = validated_data.get('intro', instance.intro)
         instance.cover_url = validated_data.get('cover_url', instance.cover_url)
         instance.recommend = validated_data.get('recommend', instance.recommend)

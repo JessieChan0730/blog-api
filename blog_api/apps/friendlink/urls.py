@@ -5,6 +5,7 @@ app_name = "friendlink"
 
 router = routers.DefaultRouter()
 router.register(r'link', views.FriendLinksViewSet)
+router.register(r'statement', views.FriendLinkStatementViewSet)
 urlpatterns = [
 ]
 

@@ -51,4 +51,5 @@ urlpatterns = [
                   path('api/', include("settings.urls")),
                   path('api/', include("annual_summary.urls")),
                   path('api/', include("friendlink.urls")),
+                  path('api/', include("photowall.urls")),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

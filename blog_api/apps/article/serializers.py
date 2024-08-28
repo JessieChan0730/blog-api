@@ -61,7 +61,7 @@ class ArticleSerializer(serializers.Serializer):
                                   u'\u2700-\u27BF'  # 括号、括号装饰符等  
                                   # ... 可以根据需要添加更多范围  
                                   u']+')
-        content = re.sub(clearn_emoji, '', validated_data.get('content'))  # 正则匹配，将表情符合替换为空''
+        content = re.sub(clearn_emoji, '', validated_data.get('content', ''))  # 正则匹配，将表情符合替换为空''
         intro = validated_data.get('intro')
         cover_url = validated_data.get('cover_url')
         visible = validated_data.get('visible')
@@ -90,7 +90,7 @@ class ArticleSerializer(serializers.Serializer):
                                   u'\u2700-\u27BF'  # 括号、括号装饰符等  
                                   # ... 可以根据需要添加更多范围  
                                   u']+')
-        instance.content = re.sub(clearn_emoji, '', validated_data.get('content'))  # 正则匹配，将表情符合替换为空''
+        instance.content = re.sub(clearn_emoji, '', validated_data.get('content', ''))  # 正则匹配，将表情符合替换为空''
         instance.intro = validated_data.get('intro', instance.intro)
         instance.cover_url = validated_data.get('cover_url', instance.cover_url)
         instance.recommend = validated_data.get('recommend', instance.recommend)

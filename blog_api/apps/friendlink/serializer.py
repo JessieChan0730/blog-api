@@ -60,7 +60,7 @@ class FriendLinkStatementSerializer(serializers.Serializer):
                                   u'\u2700-\u27BF'  # 括号、括号装饰符等  
                                   # ... 可以根据需要添加更多范围  
                                   u']+')
-        statement = re.sub(clearn_emoji, '', validated_data.get('statement'))
+        statement = re.sub(clearn_emoji, '', validated_data.get('statement',''))
         instance.statement = statement
         # instance.statement = validated_data.get('statement')
         instance.save()

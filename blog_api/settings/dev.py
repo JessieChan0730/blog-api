@@ -54,7 +54,8 @@ INSTALLED_APPS = [
     "tag",
     "annual_summary",
     "friendlink",
-    "photowall"
+    "photowall",
+    "siteinfo"
 ]
 # JWT配置
 SIMPLE_JWT = {
@@ -75,7 +76,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
-    'EXCEPTION_HANDLER':'blog_api.middleware.exception.custom_exception_handler'
+    'EXCEPTION_HANDLER': 'blog_api.middleware.exception.custom_exception_handler'
 }
 
 MIDDLEWARE = [
@@ -121,7 +122,10 @@ DATABASES = {
         "HOST": "127.0.0.1",
         "PORT": 3306,
         "USER": "root",
-        "PASSWORD": "cheng20011101"
+        "PASSWORD": "cheng20011101",
+        'OPTIONS': {'init_command': 'SET default_storage_engine=INNODB;'
+            , 'charset': 'utf8mb4'}
+
     }
 }
 
@@ -188,7 +192,6 @@ BLOG_SETTINGS = {
 MANAGER_SETTINGS = {
     "nickname": "系统管理员",
     "signature": "因为没有个性，所以没有签名",
-    "about_me": "无",
     "hobby": [
         {
             "name": "运动",

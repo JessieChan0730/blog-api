@@ -11,7 +11,6 @@ class UserDetail(models.Model):
     nickname = models.CharField(max_length=15)
     signature = models.CharField(max_length=255)
     avatar = models.ImageField(upload_to='avatar/%Y/%m/%d')
-    about_me = models.TextField()
     more_info = models.JSONField(default=dict)
 
     class Meta:
@@ -27,7 +26,6 @@ def create_user_detail(sender, instance, created, **kwargs):
         user_detail.user = instance
         user_detail.nickname = manager_info.get('nickname', '')
         user_detail.signature = manager_info.get('signature', '')
-        user_detail.about_me = manager_info.get('about_me', '')
         hobby = manager_info.get("hobby")
         media = manager_info.get("media")
         more_info = {

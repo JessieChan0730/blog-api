@@ -32,7 +32,6 @@ class UserDetailSerializer(serializers.Serializer):
     avatar = serializers.ImageField(required=False, label="图片", use_url=True, error_messages={
         'invalid': '图片参数错误'
     })
-    about_me = serializers.CharField(min_length=1,required=False)
     more_info = serializers.JSONField(required=False)
 
     def validate_more_info(self, value):
@@ -46,7 +45,6 @@ class UserDetailSerializer(serializers.Serializer):
         instance.nickname = validated_data.get('nickname', instance.nickname)
         instance.avatar = validated_data.get('avatar', instance.avatar)
         instance.signature = validated_data.get('signature', instance.signature)
-        instance.about_me = validated_data.get('about_me', instance.about_me)
         instance.more_info = validated_data.get('more_info', instance.more_info)
         instance.save()
         return instance

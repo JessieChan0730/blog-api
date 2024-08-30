@@ -184,12 +184,61 @@ CORS_ORIGIN_WHITELIST = [
 
 # 博客设置
 BLOG_SETTINGS = {
-    # 主页分类展示个数
-    "HOME_DISPLAY": 4
+    # 前台网页设置
+    "FRONT_SETTING": {
+        "WEBSITE_TITLE": "",
+        "WEBSITE_COVER": "",
+        "RECORD_INFO": "",
+        "COPYRIGHT": "",
+        "CATEGORY": {
+            "PAGE_SIZE": 1,
+            "MAX_PAGE_SIZE": 5,
+            "VISIBLE_MAX_NUM": 4
+        },
+        "TAGS": {
+            "PAGE_SIZE": 1,
+            "MAX_PAGE_SIZE": 5,
+            "QUOTE_MAX_NUM": 4
+        },
+        "BLOG": {
+            "PAGE_SIZE": 1,
+            "MAX_PAGE_SIZE": 5,
+            "RECOMMEND_MAX_NUM": 4
+        }
+    },
+    # 后台台网页设置
+    "ADMIN_SETTING": {
+        "WEBSITE_TITLE": "",
+        "WEBSITE_LOGO": "",
+        "CATEGORY": {
+            "PAGE_SIZE": 1,
+            "MAX_PAGE_SIZE": 5,
+        },
+        "TAGS": {
+            "PAGE_SIZE": 1,
+            "MAX_PAGE_SIZE": 5,
+        },
+        "BLOG": {
+            "PAGE_SIZE": 1,
+            "MAX_PAGE_SIZE": 5,
+        },
+        "FRIEND_LINK": {
+            "PAGE_SIZE": 1,
+            "MAX_PAGE_SIZE": 5,
+        },
+        "PHOTO_WALL": {
+            "PAGE_SIZE": 1,
+            "MAX_PAGE_SIZE": 5,
+        }
+    },
+    # 通用设置
+    "COMMON_SETTING": {
+        "HOME_DISPLAY": 4
+    },
 }
 
 # 管理员信息设置
-MANAGER_SETTINGS = {
+SUPER_USER_SETTINGS = {
     "nickname": "系统管理员",
     "signature": "因为没有个性，所以没有签名",
     "hobby": [

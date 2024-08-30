@@ -1,12 +1,11 @@
 from django.conf import settings
-from django.test import TestCase
+from django.core.management.base import BaseCommand
+from django.db import transaction, DatabaseError
+from settings.models import SettingsGroup, Settings
 
-from .models import SettingsGroup, Settings
 
-
-# Create your tests here.
-
-class AnalyzeSettingTest(TestCase):
+class Command(BaseCommand):
+    help = 'init blog settings'
 
     def save_settings_group(self, name: str, owner: int):
         settings_group = SettingsGroup.objects.create(name=name, owner=owner)
@@ -16,7 +15,7 @@ class AnalyzeSettingTest(TestCase):
         settings_ins = Settings.objects.create(key=key, value=value, groupId=groupId)
         return settings_ins
 
-    # 2
+    @transaction.atomic
     def analyze_setting(self, blog_setting: dict, group=None):
         for key, value in blog_setting.items():
             if isinstance(value, dict):
@@ -24,9 +23,13 @@ class AnalyzeSettingTest(TestCase):
                 settings_group = self.save_settings_group(name=key.lower(), owner=group_id)
                 self.analyze_setting(blog_setting=value, group=settings_group)
             else:
+                if value is None:
+                    raise DatabaseError("The settings value cannot be None")
+                if not group:
+                    raise DatabaseError("The blog setting file has an error, please check it")
                 if value and not isinstance(value, str):
                     value = str(value)
                 self.save_settings(key=key.lower(), value=value, groupId=group)
 
-    def test_analyze_setting(self):
+    def handle(self, *args, **options):
         self.analyze_setting(settings.BLOG_SETTINGS)

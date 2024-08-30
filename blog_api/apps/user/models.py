@@ -21,7 +21,7 @@ class UserDetail(models.Model):
 @receiver(post_save, sender=User)
 def create_user_detail(sender, instance, created, **kwargs):
     if created:
-        manager_info: dict = settings.MANAGER_SETTINGS
+        manager_info: dict = settings.SUPER_USER_SETTINGS
         user_detail = UserDetail()
         user_detail.user = instance
         user_detail.nickname = manager_info.get('nickname', '')

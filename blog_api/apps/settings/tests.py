@@ -30,3 +30,5 @@ class AnalyzeSettingTest(TestCase):
 
     def test_analyze_setting(self):
         self.analyze_setting(settings.BLOG_SETTINGS)
+
+

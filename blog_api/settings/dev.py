@@ -191,13 +191,9 @@ BLOG_SETTINGS = {
         "RECORD_INFO": "",
         "COPYRIGHT": "",
         "CATEGORY": {
-            "PAGE_SIZE": 1,
-            "MAX_PAGE_SIZE": 5,
             "VISIBLE_MAX_NUM": 4
         },
         "TAGS": {
-            "PAGE_SIZE": 1,
-            "MAX_PAGE_SIZE": 5,
             "QUOTE_MAX_NUM": 4
         },
         "BLOG": {

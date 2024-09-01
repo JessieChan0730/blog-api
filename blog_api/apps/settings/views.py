@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from blog_api.utils.config.tools.settings import SettingsTools
+from blog_api.utils.config.tools.settings import BlogSettings as Settings
 from .models import BlogSettings
 from .serializer import MetaSerializer
 
@@ -44,9 +44,8 @@ class MetaApiView(APIView):
 
 class TestSettingsView(APIView):
     def get(self, request):
-        keys = SettingsTools().admin().check_group("category").values()
-        for key in keys:
-            print(key)
+        website_title = Settings().init().front().get_setting_by_key("website_title").format()
+        print(website_title)
         return Response(data={
             "ok": "ok"
         }, status=status.HTTP_200_OK)

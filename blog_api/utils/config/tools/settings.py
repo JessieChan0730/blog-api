@@ -3,6 +3,8 @@ from typing import List
 from django.db import DatabaseError
 from settings.models import SettingsGroup
 
+from .enum import RootGroupName
+
 
 def singleton(cls):
     _instance = {}
@@ -16,10 +18,11 @@ def singleton(cls):
 
 
 class Setting:
-    def __init__(self, key, value, group):
+    def __init__(self, id, key, value, group):
         self.__key = key
         self.__value = value
         self.__group = group
+        self.__id = id
 
     def __str_to_type(self, value: str):
         if value.lower() == "true":
@@ -35,6 +38,9 @@ class Setting:
             return int(value)
         else:
             return value  # 如果不能转换为以上类型，则默认返回原字符串
+
+    def get_id(self):
+        return self.__id
 
     def get_key(self):
         return self.__key
@@ -87,8 +93,10 @@ class Group:
 
     # 根据key查找设置
     def get_setting_by_key(self, key) -> Setting:
-        setting = list(filter(lambda setting_ins: setting_ins.get_key() == key, self.__settings))[0]
-        return setting
+        settings = list(filter(lambda setting_ins: setting_ins.get_key() == key, self.__settings))
+        if len(settings) == 0:
+            raise DatabaseError("setting is not exists")
+        return settings[0]
 
     # 获取所有子分组
     def get_child_group(self) -> List["Group"]:
@@ -100,9 +108,10 @@ class Group:
 
     # 切换到指定子分组
     def switch_child_group(self, group_name) -> "Group":
-        group = list(filter(lambda group: group.get_name() == group_name, self.__child_group))[0]
-        if group is None:
+        groups = list(filter(lambda group: group.get_name() == group_name, self.__child_group))
+        if len(groups) == 0:
             raise DatabaseError("group is not exists")
+        group = groups[0]
         return group
 
 
@@ -113,19 +122,45 @@ class BlogSettingsControls:
     def all(self) -> List[Group]:
         return self.__blog_settings
 
+    def format(self):
+        all_settings = {}
+        for group in self.__blog_settings:
+            setting_dict = self.__analyze_setting_dict(group)
+            all_settings[group.get_name()] = setting_dict
+        return all_settings
+
+    def __analyze_setting_dict(self, group: Group):
+        format_setting = {}
+        settings = group.get_settings()
+        for setting in settings:
+            format_setting.update({
+                # TODO 添加ID字典
+                setting.get_key(): {
+                    "id": setting.get_id(),
+                    "value": setting.get_value()
+                }
+            })
+        child_groups = group.get_child_group()
+        for child_group in child_groups:
+            child_format = self.__analyze_setting_dict(child_group)
+            format_setting[child_group.get_name()] = child_format
+        return format_setting
+
     def switch(self, keyword: str) -> Group:
-        group = list(
-            filter(lambda group_ins: group_ins.get_name().lower() == keyword.lower(), self.__blog_settings)).pop()
-        return group
+        groups = list(
+            filter(lambda group_ins: group_ins.get_name().lower() == keyword.lower(), self.__blog_settings))
+        if len(groups) == 0:
+            raise DatabaseError("cannot switch to a non-existing group")
+        return groups.pop()
 
     def front(self) -> Group:
-        return self.switch("front_setting")
+        return self.switch(RootGroupName.front_setting)
 
     def admin(self) -> Group:
-        return self.switch("admin_setting")
+        return self.switch(RootGroupName.admin_setting)
 
     def common(self) -> Group:
-        return self.switch("common_setting")
+        return self.switch(RootGroupName.common_setting)
 
 
 # @singleton
@@ -142,7 +177,7 @@ class BlogSettings:
         child_groups = []
         settings = group.settings_set.all()
         for setting in settings:
-            setting = Setting(key=setting.key, value=setting.value, group=group_ins)
+            setting = Setting(id=setting.id, key=setting.key, value=setting.value, group=group_ins)
             setting_ins.append(setting)
 
         for child_group in self.__child_groups:
@@ -163,8 +198,12 @@ class BlogSettings:
             self.__blog_settings.append(group_ins)
 
     def init(self) -> BlogSettingsControls:
-        if len(self.__blog_settings) == 0:
-            # if len(self.__blog_settings) == 0 and len(self.__child_groups) != 0:
+        if len(self.__blog_settings) == 0 and self.__controls is None:
             self.__build()
             self.__controls = BlogSettingsControls(self.__blog_settings)
         return self.__controls
+
+
+@singleton
+class ReadOnlyBlogSettings(BlogSettings):
+    pass

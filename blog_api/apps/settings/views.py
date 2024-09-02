@@ -6,9 +6,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from blog_api.utils.config.tools.settings import BlogSettings as Settings
-from .models import BlogSettings
-from .serializer import MetaSerializer
+from blog_api.utils.config.tools.annotation import setting
+from blog_api.utils.config.tools.enum import RootGroupName
+from .models import BlogSettings, Settings
+from .serializer import MetaSerializer, PutSettingSerializer
 
 
 # Create your views here.
@@ -42,10 +43,23 @@ class MetaApiView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class TestSettingsView(APIView):
+@setting(is_format=True)
+class FrontSettingView(APIView):
     def get(self, request):
-        website_title = Settings().init().front().get_setting_by_key("website_title").format()
-        print(website_title)
-        return Response(data={
-            "ok": "ok"
-        }, status=status.HTTP_200_OK)
+        settings = self.inject_setting.get(RootGroupName.front_setting)
+        return Response(data=settings, status=status.HTTP_200_OK)
+
+    def put(self, request):
+        data = request.data
+        settings = Settings.objects.all()
+        serializer = PutSettingSerializer(data=data, instance=settings, many=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+@setting(is_format=True)
+class AdminSettingView(APIView):
+    def get(self, request):
+        settings = self.inject_setting.get(RootGroupName.admin_setting)
+        return Response(data=settings, status=status.HTTP_200_OK)

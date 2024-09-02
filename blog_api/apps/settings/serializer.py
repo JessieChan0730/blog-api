@@ -24,3 +24,14 @@ class MetaSerializer(serializers.Serializer):
             meta.cover = cover
         meta.save()
         return meta
+
+
+class PutSettingSerializer(serializers.ListSerializer):
+    id = serializers.IntegerField(label="配置ID")
+    value = serializers.IntegerField(label="配置值")
+
+    def update(self, instance_queryset, validated_data_list):
+        pass
+
+
+

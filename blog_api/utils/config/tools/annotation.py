@@ -1,7 +1,7 @@
 from django.db import DatabaseError
 from rest_framework.pagination import PageNumberPagination
 
-from .settings import BlogSettings
+from .settings import BlogSettings, ReadOnlyBlogSettings
 
 
 def front_paging_setting(group_name: str):
@@ -67,12 +67,12 @@ def common_paging_setting(group_name: str):
     return proxy
 
 
-def setting(path: str = None, key: str = None):
+def setting(path: str = None, key: str = None, is_format=False):
     def proxy(cls):
         class ProxyClass(cls):
             def __init__(self, **kwargs):
                 super().__init__(**kwargs)
-                self.setting = self.__fetch_settings(path=path, key=key)
+                self.inject_setting = self.__fetch_settings(path=path, key=key)
 
             def __fetch_settings(self, path, key):
                 blog_setting = BlogSettings().init()
@@ -84,11 +84,37 @@ def setting(path: str = None, key: str = None):
                     if key is not None:
                         return group.get_setting_by_key(key).get_value()
                     else:
-                        return group.get_settings_format()
+                        return group.get_settings_format() if is_format else group.get_settings()
                 elif key is None:
-                    return blog_setting.all()
+                    return blog_setting.format() if is_format else blog_setting.all()
                 else:
                     raise ValueError("Passing the key parameter must pass the group parameter")
+
+        return ProxyClass
+
+    return proxy
+
+
+def read_only_setting(path: str = None, key: str = None, is_format=False):
+    def proxy(cls):
+        global setting_value
+        blog_setting = ReadOnlyBlogSettings().init()
+        g_path = [] if path is None else path.split("/")
+        if len(g_path) > 0:
+            group = blog_setting.switch(g_path.pop(0))
+            for group_name in g_path:
+                group = group.switch_child_group(group_name=group_name)
+            if key is not None:
+                setting_value = group.get_setting_by_key(key).get_value()
+            else:
+                setting_value = group.get_settings_format() if is_format else group.get_settings()
+        elif key is None:
+            setting_value = blog_setting.format() if is_format else blog_setting.all()
+        else:
+            raise ValueError("Passing the key parameter must pass the group parameter")
+
+        class ProxyClass(cls):
+            inject_setting = setting_value
 
         return ProxyClass
 

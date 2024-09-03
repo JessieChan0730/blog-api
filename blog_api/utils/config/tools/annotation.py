@@ -7,8 +7,8 @@ from .settings import BlogSettings, ReadOnlyBlogSettings
 def front_paging_setting(group_name: str):
     def proxy(cls):
         class ProxyClass(cls, PageNumberPagination):
-            def __init__(self, **kwargs):
-                super().__init__(**kwargs)
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
                 self.load_settings()
 
             def load_settings(self):
@@ -28,8 +28,8 @@ def front_paging_setting(group_name: str):
 def admin_paging_setting(group_name: str):
     def proxy(cls):
         class ProxyClass(cls, PageNumberPagination):
-            def __init__(self, **kwargs):
-                super().__init__(**kwargs)
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
                 self.load_settings()
 
             def load_settings(self):
@@ -49,8 +49,8 @@ def admin_paging_setting(group_name: str):
 def common_paging_setting(group_name: str):
     def proxy(cls):
         class ProxyClass(cls, PageNumberPagination):
-            def __init__(self, **kwargs):
-                super().__init__(**kwargs)
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
                 self.load_settings()
 
             def load_settings(self):
@@ -70,12 +70,20 @@ def common_paging_setting(group_name: str):
 def setting(path: str = None, key: str = None, is_format=False):
     def proxy(cls):
         class ProxyClass(cls):
-            def __init__(self, **kwargs):
-                super().__init__(**kwargs)
-                self.inject_setting = self.__fetch_settings(path=path, key=key)
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+                self._fetch_settings_later = True
+                self._path = path
+                self._key = key
+                self._is_format = is_format
 
-            def __fetch_settings(self, path, key):
-                blog_setting = BlogSettings().init()
+            def fetch_settings(self):
+                if self._fetch_settings_later:
+                    blog_setting = BlogSettings().init()
+                    self.inject_setting = self.__fetch_settings_impl(blog_setting)
+                    self._fetch_settings_later = False
+
+            def __fetch_settings_impl(self, blog_setting):
                 g_path = [] if path is None else path.split("/")
                 if len(g_path) > 0:
                     group = blog_setting.switch(g_path.pop(0))

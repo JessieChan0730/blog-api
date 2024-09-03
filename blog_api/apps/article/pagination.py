@@ -1,5 +1,5 @@
 # 自定义分页类
-from blog_api.utils.config.tools.annotation import front_paging_setting
+from blog_api.utils.config.tools.annotation import admin_paging_setting
 
 
 # 使用此分页器可以进行如下访问
@@ -21,6 +21,6 @@ from blog_api.utils.config.tools.annotation import front_paging_setting
 #     max_page_size = 4
 
 
-@front_paging_setting(group_name="blog")
+@admin_paging_setting(group_name="blog")
 class ArticlePagination:
     pass

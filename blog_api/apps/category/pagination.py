@@ -1,7 +1,8 @@
 from rest_framework.pagination import PageNumberPagination
 
+from blog_api.utils.config.tools.annotation import admin_paging_setting
 
-class CategoryPagination(PageNumberPagination):
-    page_size_query_param = 'page_size'
-    page_size = 5
-    max_page_size = 5
+
+@admin_paging_setting(group_name="category")
+class CategoryPagination:
+    pass

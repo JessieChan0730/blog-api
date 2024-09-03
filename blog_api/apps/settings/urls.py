@@ -5,6 +5,7 @@ from . import views
 app_name = "settings"
 
 urlpatterns = [
-    path('settings', views.MetaApiView.as_view(), name='settings'),
-    path('test', views.FrontSettingView.as_view(), name='test'),
+    path('settings/front/', views.FrontSettingView.as_view(), name='front'),
+    path('settings/admin/', views.AdminSettingView.as_view(), name='admin'),
+    path('settings/', views.PutSettingsView.as_view(), name='put'),
 ]

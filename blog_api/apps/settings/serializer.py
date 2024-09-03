@@ -1,37 +1,30 @@
 from rest_framework import serializers
 
-from .models import BlogSettings
+from .models import Settings
 
 
-class MetaSerializer(serializers.Serializer):
-    title = serializers.CharField(max_length=25, required=False)
-    cover = serializers.ImageField(required=False, label="图片", use_url=True, error_messages={
-        'invalid': '图片参数错误'
-    })
+class SettingSerializer(serializers.Serializer):
+    sid = serializers.IntegerField(label="配置ID")
+    value = serializers.CharField(label="配置值")
 
     def create(self, validated_data):
-        title = validated_data.get("title", None)
-        cover = validated_data.get("cover", None)
-        meta = BlogSettings.objects.first()
-        # 不存在就创建
-        if meta is None:
-            meta = BlogSettings(title=title, cover=cover)
-            meta.save()
-            return meta
-        if title:
-            meta.title = title
-        if cover:
-            meta.cover = cover
-        meta.save()
-        return meta
+        sid = validated_data.get("sid", "")
+        value = validated_data.get("value", "")
+        Settings.objects.filter(pk=sid).update(value=value)
+        return validated_data
 
+    def validate_sid(self, sid):
+        exists = Settings.objects.filter(pk=sid).exists()
+        if not exists:
+            raise serializers.ValidationError(f"设置ID不存在")
+        return sid
 
-class PutSettingSerializer(serializers.ListSerializer):
-    id = serializers.IntegerField(label="配置ID")
-    value = serializers.IntegerField(label="配置值")
-
-    def update(self, instance_queryset, validated_data_list):
-        pass
-
-
-
+    def validate_value(self, value):
+        try:
+            int_value = int(value)
+            # 如果能成功转换为整数，并且你有特别的处理需求，可以在这里做
+            # 例如，返回整数而不是字符串
+            return int_value
+        except ValueError:
+            # 如果转换失败，假设它是有效的字符串，直接返回
+            return value

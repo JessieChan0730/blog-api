@@ -25,6 +25,7 @@ class CategorySerializer(serializers.Serializer):
     def validate_display(self, value):
         if value:
             # 主页展示不能超过4个
+            self.fetch_settings()
             setting_len = self.inject_setting
             if len(Category.objects.filter(display=1)) >= setting_len:
                 raise serializers.ValidationError(f"主页展示不能大于{setting_len}个")

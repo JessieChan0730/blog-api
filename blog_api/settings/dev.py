@@ -186,7 +186,7 @@ CORS_ORIGIN_WHITELIST = [
 BLOG_SETTINGS = {
     # 前台网页设置
     "FRONT_SETTING": {
-        "WEBSITE_TITLE": "",
+        "WEBSITE_TITLE": "Jessie'Blog",
         "WEBSITE_COVER": "",
         "RECORD_INFO": "",
         "COPYRIGHT": "",
@@ -197,34 +197,35 @@ BLOG_SETTINGS = {
             "QUOTE_MAX_NUM": 4
         },
         "BLOG": {
-            "PAGE_SIZE": 1,
-            "MAX_PAGE_SIZE": 5,
+            "PAGE_SIZE": 6,
+            "MAX_PAGE_SIZE": 10,
             "RECOMMEND_MAX_NUM": 4
         }
     },
     # 后台台网页设置
     "ADMIN_SETTING": {
-        "WEBSITE_TITLE": "",
+        "WEBSITE_TITLE": "BlogAdmin",
         "WEBSITE_LOGO": "",
+        "RECORD_INFO": "",
         "CATEGORY": {
-            "PAGE_SIZE": 1,
-            "MAX_PAGE_SIZE": 5,
+            "PAGE_SIZE": 5,
+            "MAX_PAGE_SIZE": 8,
         },
         "TAGS": {
-            "PAGE_SIZE": 1,
-            "MAX_PAGE_SIZE": 5,
+            "PAGE_SIZE": 5,
+            "MAX_PAGE_SIZE": 8,
         },
         "BLOG": {
-            "PAGE_SIZE": 1,
-            "MAX_PAGE_SIZE": 5,
+            "PAGE_SIZE": 2,
+            "MAX_PAGE_SIZE": 4,
         },
         "FRIEND_LINK": {
-            "PAGE_SIZE": 1,
-            "MAX_PAGE_SIZE": 5,
+            "PAGE_SIZE": 5,
+            "MAX_PAGE_SIZE": 8,
         },
         "PHOTO_WALL": {
-            "PAGE_SIZE": 1,
-            "MAX_PAGE_SIZE": 5,
+            "PAGE_SIZE": 5,
+            "MAX_PAGE_SIZE": 8,
         }
     },
     # 通用设置

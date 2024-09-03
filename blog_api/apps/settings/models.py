@@ -2,19 +2,10 @@ from django.db import models
 
 
 # Create your models here.
-class BlogSettings(models.Model):
-    # 网页标题
-    title = models.CharField(max_length=25)
-    # blog封面
-    cover = models.ImageField(upload_to='cover/%Y/%m/%d')
-
-    class Meta:
-        db_table = 'blog_settings'
-
 
 class SettingsGroup(models.Model):
     name = models.CharField(max_length=255, verbose_name="分组名")
-    owner = models.IntegerField(verbose_name="从属分组ID",null=True,default=-1)
+    owner = models.IntegerField(verbose_name="从属分组ID", null=True, default=-1)
 
     def __str__(self):
         return self.name
@@ -33,4 +24,3 @@ class Settings(models.Model):
 
     class Meta:
         db_table = 'settings'
-

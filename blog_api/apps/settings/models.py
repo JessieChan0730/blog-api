@@ -24,3 +24,17 @@ class Settings(models.Model):
 
     class Meta:
         db_table = 'settings'
+
+
+class FrontCover(models.Model):
+    cover = models.ImageField(upload_to='setting/cover/%Y/%m/%d', verbose_name="前台封面")
+
+    class Meta:
+        db_table = 'front_cover'
+
+
+class AdminLogo(models.Model):
+    logo = models.ImageField(upload_to='setting/logo/%Y/%m/%d', verbose_name="后台LOGO")
+
+    class Meta:
+        db_table = 'admin_logo'

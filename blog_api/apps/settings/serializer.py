@@ -1,23 +1,23 @@
 from rest_framework import serializers
 
-from .models import Settings
+from .models import Settings, FrontCover, AdminLogo
 
 
 class SettingSerializer(serializers.Serializer):
-    sid = serializers.IntegerField(label="配置ID")
+    id = serializers.IntegerField(label="配置ID")
     value = serializers.CharField(label="配置值")
 
     def create(self, validated_data):
-        sid = validated_data.get("sid", "")
+        id = validated_data.get("id", "")
         value = validated_data.get("value", "")
-        Settings.objects.filter(pk=sid).update(value=value)
+        Settings.objects.filter(pk=id).update(value=value)
         return validated_data
 
-    def validate_sid(self, sid):
-        exists = Settings.objects.filter(pk=sid).exists()
+    def validate_id(self, id):
+        exists = Settings.objects.filter(pk=id).exists()
         if not exists:
             raise serializers.ValidationError(f"设置ID不存在")
-        return sid
+        return id
 
     def validate_value(self, value):
         try:
@@ -28,3 +28,15 @@ class SettingSerializer(serializers.Serializer):
         except ValueError:
             # 如果转换失败，假设它是有效的字符串，直接返回
             return value
+
+
+class FrontCoverSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FrontCover
+        fields = ['cover']
+
+
+class AdminLogoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdminLogo
+        fields = ['logo']

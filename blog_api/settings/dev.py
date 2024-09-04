@@ -206,6 +206,7 @@ BLOG_SETTINGS = {
     "ADMIN_SETTING": {
         "WEBSITE_TITLE": "BlogAdmin",
         "WEBSITE_LOGO": "",
+        "COPYRIGHT": "",
         "RECORD_INFO": "",
         "CATEGORY": {
             "PAGE_SIZE": 5,

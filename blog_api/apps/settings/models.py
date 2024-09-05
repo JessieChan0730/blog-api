@@ -15,7 +15,7 @@ class SettingsGroup(models.Model):
 
 
 class Settings(models.Model):
-    key = models.CharField(max_length=255)
+    key = models.CharField(max_length=255,blank=True)
     value = models.CharField(max_length=255)
     groupId = models.ForeignKey(SettingsGroup, on_delete=models.CASCADE)
 

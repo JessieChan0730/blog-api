@@ -5,7 +5,7 @@ from .models import Settings, FrontCover, AdminLogo
 
 class SettingSerializer(serializers.Serializer):
     id = serializers.IntegerField(label="配置ID")
-    value = serializers.CharField(label="配置值")
+    value = serializers.CharField(label="配置值",allow_blank=True)
 
     def create(self, validated_data):
         id = validated_data.get("id", "")

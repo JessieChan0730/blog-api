@@ -88,7 +88,7 @@ class Group:
         settings = self.__settings
         settings_dict = {}
         for setting in settings:
-            settings_dict[setting.key] = setting.value
+            settings_dict[setting.get_key()] = setting.get_value()
         return settings_dict
 
     # 根据key查找设置
@@ -134,7 +134,6 @@ class BlogSettingsControls:
         settings = group.get_settings()
         for setting in settings:
             format_setting.update({
-                # TODO 添加ID字典
                 setting.get_key(): {
                     "id": setting.get_id(),
                     "value": setting.get_value()

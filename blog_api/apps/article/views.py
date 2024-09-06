@@ -60,7 +60,7 @@ class ArticleViewSet(ListModelMixin, RetrieveModelMixin, DestroyModelMixin, Gene
     # 获取推荐文章
     @action(methods=['GET'], detail=False)
     def recommend(self, request: Request) -> Response:
-        comm_article = Article.objects.filter(is_recommend=True)
+        comm_article = Article.objects.filter(recommend=True)
         serializer = self.get_serializer(instance=comm_article, many=True)
         return Response(data=render_data(code=200, msg="获取文章列表成功", data=serializer.data),
                         status=status.HTTP_200_OK)

@@ -70,6 +70,9 @@ def common_paging_setting(group_name: str):
 def setting(path: str = None, key: str = None, is_format=False):
     def proxy(cls):
         class ProxyClass(cls):
+            class Meta:
+                ref_name = f'ProxyClass_{cls.__name__}'
+
             def __init__(self, *args, **kwargs):
                 super().__init__(*args, **kwargs)
                 self._fetch_settings_later = True
@@ -122,6 +125,8 @@ def read_only_setting(path: str = None, key: str = None, is_format=False):
             raise ValueError("Passing the key parameter must pass the group parameter")
 
         class ProxyClass(cls):
+            class Meta:
+                ref_name = f'ProxyClass_{cls.__name__}'
             inject_setting = setting_value
 
         return ProxyClass

@@ -49,7 +49,6 @@ class ArticleSerializer(serializers.Serializer):
 
     # 验证tag是否存在
     def validate_tags_ids(self, value):
-        print(self.inject_setting.get(RootGroupName.front_setting).get("tags").get("quote_max_num", 4))
         quote_max_num = self.inject_setting.get(RootGroupName.front_setting).get("tags").get("quote_max_num").get(
             "value", 4)
         if len(value) > quote_max_num:

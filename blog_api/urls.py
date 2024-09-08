@@ -49,8 +49,8 @@ urlpatterns = [
                   path('api/', include("tag.urls")),
                   path('api/', include("category.urls")),
                   path('api/', include("settings.urls")),
-                  path('api/', include("annual_summary.urls")),
                   path('api/', include("friendlink.urls")),
                   path('api/', include("photowall.urls")),
                   path('api/', include("siteinfo.urls")),
+                  path('api/', include("sumup.urls")),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

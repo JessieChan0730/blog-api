@@ -52,10 +52,10 @@ INSTALLED_APPS = [
     "article",
     "category",
     "tag",
-    "annual_summary",
     "friendlink",
     "photowall",
-    "siteinfo"
+    "siteinfo",
+    "sumup"
 ]
 # JWT配置
 SIMPLE_JWT = {

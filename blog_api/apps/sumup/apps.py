@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class AnnualSummaryConfig(AppConfig):
+class SumupConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "annual_summary"
+    name = "sumup"

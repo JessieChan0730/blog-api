@@ -1,23 +1,23 @@
 from article.models import Article
 from category.models import Category
-
 from django.db.models import Count
 from django.db.models.functions.datetime import TruncDate
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from tag.models import Tag
 
 
 # Create your views here.
 class StatisticsAPI(APIView):
     def get(self, request: Request) -> Response:
+        current_year = timezone.now().year
         response_data = {}
         article_num = Article.objects.all().count()
 
-        articles_per_day = Article.objects.annotate(
+        articles_per_day = Article.objects.filter(create_date__year=current_year).annotate(
             date=TruncDate('create_date')
         ).values('date').annotate(
             sum=Count('id')

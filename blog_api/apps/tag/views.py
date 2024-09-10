@@ -36,6 +36,6 @@ class TagViewSet(viewsets.ModelViewSet):
         name = request.query_params.get('name', '')
         tags = self.get_queryset().filter(name__icontains=name)
         if not tags:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(data=[],status=status.HTTP_200_OK)
         serializer = self.get_serializer(tags, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

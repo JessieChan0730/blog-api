@@ -10,7 +10,7 @@ from blog_api.utils.result.settings import CodeType
 
 class ResultMiddleware(MiddlewareMixin):
     # 白名单
-    EXCLUDE_URL = ["/api/login", "/api/refresh", "/redoc/", "/swagger/", "/media/"]
+    EXCLUDE_URL = ["/redoc/", "/swagger/", "/media/"]
 
     def process_response(self, request, response):
         # 如果请求的url在白名单的中，则直接返回原来的数据

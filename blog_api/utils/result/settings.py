@@ -15,5 +15,5 @@ CODE_MSG_MAP = {
 class CodeType:
     NOT_CONTENT = [204]
     SUCCESS = [200, 201]
-    EXCEPTION = [400]
-    ERROR = [404, 401, 500, 405]
+    EXCEPTION = [400, 401]
+    ERROR = [404, 500, 405]

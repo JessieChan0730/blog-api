@@ -5,8 +5,8 @@ from jsonschema.validators import validate
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from blog_api.utils.result.format import render_data
 from .const import json_schema
+
 
 class ChangePasswordSerializer(serializers.Serializer):
     #  修改密码
@@ -27,8 +27,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserDetailSerializer(serializers.Serializer):
-    nickname = serializers.CharField(required=False,min_length=1, max_length=15)
-    signature = serializers.CharField(max_length=255,min_length=1, required=False)
+    nickname = serializers.CharField(required=False, min_length=1, max_length=15)
+    signature = serializers.CharField(max_length=255, min_length=1, required=False)
     avatar = serializers.ImageField(required=False, label="图片", use_url=True, error_messages={
         'invalid': '图片参数错误'
     })
@@ -52,8 +52,7 @@ class UserDetailSerializer(serializers.Serializer):
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
-        old_data = super().validate(attrs)
-        old_data['tokenType'] = 'Bearer'
-        old_data['expires'] = settings.SIMPLE_JWT.get('TOKEN_EXPIRES', 30 * 60)
-        new_data = render_data(code=200, data=old_data)
-        return new_data
+        return_data = super().validate(attrs)
+        return_data['tokenType'] = 'Bearer'
+        return_data['expires'] = settings.SIMPLE_JWT.get('TOKEN_EXPIRES', 30 * 60)
+        return return_data

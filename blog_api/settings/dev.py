@@ -55,7 +55,8 @@ INSTALLED_APPS = [
     "friendlink",
     "photowall",
     "siteinfo",
-    "sumup"
+    "sumup",
+    "oauth"
 ]
 # JWT配置
 SIMPLE_JWT = {
@@ -65,7 +66,7 @@ SIMPLE_JWT = {
     # token刷新后的有效时间
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=7),
     # 自定义token返回的数据
-    "TOKEN_OBTAIN_SERIALIZER": "user.serializer.CustomTokenObtainPairSerializer"
+    "TOKEN_OBTAIN_SERIALIZER": "oauth.serializer.CustomTokenObtainPairSerializer"
 }
 # 配置 rest_framework
 REST_FRAMEWORK = {

@@ -53,4 +53,5 @@ urlpatterns = [
                   path('api/', include("photowall.urls")),
                   path('api/', include("siteinfo.urls")),
                   path('api/', include("sumup.urls")),
+                  path('api/', include("oauth.urls")),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

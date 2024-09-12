@@ -77,7 +77,3 @@ class UserDetailViewSet(GenericViewSet):
                 'message': '您还未通过认证'
             }, status=status.HTTP_401_UNAUTHORIZED)
 
-
-class LoginOutView(APIView):
-    def delete(self, request):
-        return Response(status=status.HTTP_204_NO_CONTENT)

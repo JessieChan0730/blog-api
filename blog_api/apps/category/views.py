@@ -2,6 +2,7 @@ from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from .filter import CategoryFilter
@@ -15,6 +16,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     pagination_class = CategoryPagination
     filter_backends = (DjangoFilterBackend,)
     queryset = Category.objects.all()
+    permission_classes = [IsAuthenticatedOrReadOnly]
     # 自定义过滤器
     filterset_class = CategoryFilter
 

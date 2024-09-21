@@ -14,6 +14,16 @@ class PhotoWallSerializer(serializers.ModelSerializer):
         }
 
 
+class FrontPhotoWallSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PhotoWall
+        fields = ['id', 'image','description']
+        read_only_fields = ['id']
+        extra_kwargs = {
+            'image': {'use_url': True},
+        }
+
+
 class PhotoWallUpdateSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     description = serializers.CharField(max_length=255, label="图片介绍")

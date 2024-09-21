@@ -181,6 +181,8 @@ X_FRAME_OPTIONS = "ALLOW-FROM"
 CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1:3000",
     "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:3001",
 ]
 
 # 博客设置
@@ -201,6 +203,10 @@ BLOG_SETTINGS = {
             "PAGE_SIZE": 6,
             "MAX_PAGE_SIZE": 10,
             "RECOMMEND_MAX_NUM": 4
+        },
+        "PHOTO_WALL": {
+            "PAGE_SIZE": 5,
+            "MAX_PAGE_SIZE": 8,
         }
     },
     # 后台台网页设置

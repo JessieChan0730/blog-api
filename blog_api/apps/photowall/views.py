@@ -2,14 +2,14 @@ from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, DestroyModelMixin
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from .filter import PhotoWallFilter
 from .models import PhotoWall
-from .pagination import PhotoPagination
-from .serializer import PhotoWallSerializer, PhotoWallUpdateSerializer, DeleteMultiple
+from .pagination import PhotoPagination, FrontPhotoPagination
+from .serializer import PhotoWallSerializer, PhotoWallUpdateSerializer, DeleteMultiple, FrontPhotoWallSerializer
 
 
 # Create your views here.
@@ -47,3 +47,11 @@ class PhotoWallViewSet(DestroyModelMixin, CreateModelMixin, ListModelMixin, Gene
         ids = serializer.data.get('ids', [])
         self.queryset.filter(id__in=ids).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# 前端请求照片墙接口
+class FrontPhotoWallViewSet(ListModelMixin, GenericViewSet):
+    queryset = PhotoWall.objects.filter(visible=True).all()
+    permission_classes = [AllowAny]
+    pagination_class = FrontPhotoPagination
+    serializer_class = FrontPhotoWallSerializer

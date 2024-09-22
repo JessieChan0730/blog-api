@@ -1,5 +1,3 @@
-import re
-
 from rest_framework import serializers
 
 from .models import FriendLink
@@ -52,6 +50,16 @@ class FriendLinkStatementSerializer(serializers.Serializer):
     statement = serializers.CharField(required=True)
 
     def update(self, instance, validated_data):
-        instance.statement = validated_data.get('statement','')
+        instance.statement = validated_data.get('statement', '')
         instance.save()
         return instance
+
+
+class FrontFriendLinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FriendLink
+        exclude = ['status']
+        read_only_fields = ['id']
+        extra_kwargs = {
+            'email': {'write_only': True},
+        }

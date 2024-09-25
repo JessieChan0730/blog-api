@@ -2,7 +2,7 @@ from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import status, filters
 from rest_framework.decorators import action
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, CreateModelMixin, DestroyModelMixin
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
@@ -11,8 +11,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from blog_api.utils.result.format import render_data
 from .filter import CategoryFilter
 from .models import Article, ImageContent, Cover
-from .pagination import ArticlePagination
-from .serializers import ArticleSerializer, ImageContentSerializer, CoverSerializer
+from .pagination import ArticlePagination, FrontArticlePagination
+from .serializers import ArticleSerializer, ImageContentSerializer, CoverSerializer, FrontArticleSerializer
 
 
 # Create your views here.
@@ -91,3 +91,22 @@ class CoverViewSet(CreateModelMixin, GenericViewSet):
     serializer_class = CoverSerializer
     authentication_classes = [JWTAuthentication]  # 认证方式
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+
+class FrontArticleViewSet(ListModelMixin, GenericViewSet):
+    queryset = Article.objects.filter(visible=True).all()
+    serializer_class = FrontArticleSerializer
+    permission_classes = [AllowAny]  # 权限类，匿名用户只读，登录用户可以操作
+    pagination_class = FrontArticlePagination
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend,)
+    search_fields = ('title',)
+    ordering_fields = ('create_date', 'update_date',)
+    filterset_class = CategoryFilter
+
+    # 获取推荐文章
+    @action(methods=['GET'], detail=False)
+    def recommend(self, request: Request) -> Response:
+        comm_article = self.get_queryset().filter(recommend=True)
+        serializer = self.get_serializer(instance=comm_article, many=True)
+        return Response(data=serializer.data,
+                        status=status.HTTP_200_OK)

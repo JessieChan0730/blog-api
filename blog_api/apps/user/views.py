@@ -5,7 +5,6 @@ from rest_framework.exceptions import APIException
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -77,3 +76,22 @@ class UserDetailViewSet(GenericViewSet):
                 'message': '您还未通过认证'
             }, status=status.HTTP_401_UNAUTHORIZED)
 
+
+class FrontUserDetailViewSet(GenericViewSet):
+    authentication_classes = [JWTAuthentication]  # 认证方式
+    permission_classes = [AllowAny]  # 权限类，匿名用户只读，登录用户可以操作
+    queryset = UserDetail.objects.all().first()
+    serializer_class = UserDetailSerializer
+
+    @action(detail=False, methods=['GET'])
+    def info(self, request: Request) -> Response:
+        # 获取用户
+        user = self.get_queryset()
+        if user is not None:
+            serializer = self.get_serializer(user)
+            # return Response(data=ResultData.ok_200(data=serializer.data), status=status.HTTP_200_OK)
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_200_OK)
+        else:
+            raise APIException('用户被删除了')

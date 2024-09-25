@@ -1,5 +1,5 @@
 # 自定义分页类
-from blog_api.utils.config.tools.annotation import admin_paging_setting
+from blog_api.utils.config.tools.annotation import admin_paging_setting, front_paging_setting
 
 
 # 使用此分页器可以进行如下访问
@@ -23,4 +23,9 @@ from blog_api.utils.config.tools.annotation import admin_paging_setting
 
 @admin_paging_setting(group_name="blog")
 class ArticlePagination:
+    pass
+
+
+@front_paging_setting(group_name="blog")
+class FrontArticlePagination:
     pass

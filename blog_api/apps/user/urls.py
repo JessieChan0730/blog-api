@@ -1,11 +1,11 @@
-from django.urls import path
+
 from rest_framework import routers
-from rest_framework_simplejwt.views import token_obtain_pair, token_verify, token_refresh
-from .views import UserDetailViewSet
+from .views import UserDetailViewSet, FrontUserDetailViewSet
 
 app_name = "user"
 router = routers.DefaultRouter()
-router.register(r'user', UserDetailViewSet)
+router.register(r'user', UserDetailViewSet,basename='user')
+router.register(r'front/user', FrontUserDetailViewSet,basename='front_user')
 
 urlpatterns = [
 ]

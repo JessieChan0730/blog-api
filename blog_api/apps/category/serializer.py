@@ -34,3 +34,8 @@ class CategorySerializer(serializers.Serializer):
 
 class DeleteMultiple(serializers.Serializer):
     ids = serializers.ListField(child=serializers.IntegerField(), required=True, allow_empty=False, min_length=1)
+
+
+class FrontCategorySerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=10, required=True)

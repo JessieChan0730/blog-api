@@ -133,3 +133,16 @@ class CoverSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cover
         fields = "__all__"
+
+
+class FrontArticleSerializer(serializers.Serializer):
+    id = serializers.IntegerField(min_value=1, read_only=True)
+    title = serializers.CharField(min_length=1, max_length=40, label='标题')
+    content = serializers.CharField(allow_blank=False, allow_null=False, label='内容')
+    intro = serializers.CharField(allow_blank=False, allow_null=False, max_length=200, label='简介')
+    cover_url = serializers.URLField(required=True, label='封面链接')
+    recommend = serializers.BooleanField(default=False, required=False, label='是否推荐')
+    category = CategorySerializer(read_only=True)
+    tags = TagSerializer(read_only=True, many=True)
+    create_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
+    update_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)

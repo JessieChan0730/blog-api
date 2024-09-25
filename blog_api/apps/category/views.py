@@ -2,13 +2,14 @@ from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.mixins import ListModelMixin
+from rest_framework.permissions import IsAuthenticatedOrReadOnly,AllowAny
 from rest_framework.response import Response
 
 from .filter import CategoryFilter
 from .models import Category
 from .pagination import CategoryPagination
-from .serializer import CategorySerializer, DeleteMultiple
+from .serializer import CategorySerializer, DeleteMultiple, FrontCategorySerializer
 
 
 # Create your views here.
@@ -45,3 +46,10 @@ class CategoryViewSet(viewsets.ModelViewSet):
         all_category = self.get_queryset().all()
         serializer = self.get_serializer(all_category, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# Create your views here.
+class FrontCategoryViewSet(ListModelMixin,viewsets.GenericViewSet):
+    queryset = Category.objects.filter(display=True).all()
+    permission_classes = [AllowAny]
+    serializer_class = FrontCategorySerializer

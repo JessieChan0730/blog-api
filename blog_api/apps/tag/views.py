@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.mixins import ListModelMixin
+from rest_framework.permissions import IsAuthenticatedOrReadOnly,AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -39,3 +40,10 @@ class TagViewSet(viewsets.ModelViewSet):
             return Response(data=[],status=status.HTTP_200_OK)
         serializer = self.get_serializer(tags, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class FrontTagViewSet(ListModelMixin,viewsets.GenericViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+    authentication_classes = [JWTAuthentication]  # 认证方式
+    permission_classes = [AllowAny]

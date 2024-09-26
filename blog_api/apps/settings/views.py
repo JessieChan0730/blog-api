@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.mixins import CreateModelMixin
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly,AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
@@ -17,6 +17,8 @@ from .serializer import SettingSerializer, AdminLogoSerializer, FrontCoverSerial
 
 @setting(is_format=True)
 class FrontSettingView(APIView):
+    authentication_classes = [JWTAuthentication]  # 认证方式
+    permission_classes = [AllowAny]  # 权限类，匿名用户只读，登录用户可以操作
     def get(self, request):
         self.fetch_settings()
         settings = self.inject_setting.get(RootGroupName.front_setting)

@@ -93,7 +93,7 @@ class CoverViewSet(CreateModelMixin, GenericViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 
-class FrontArticleViewSet(ListModelMixin, GenericViewSet):
+class FrontArticleViewSet(ListModelMixin,RetrieveModelMixin, GenericViewSet):
     queryset = Article.objects.filter(visible=True).all()
     serializer_class = FrontArticleSerializer
     permission_classes = [AllowAny]  # 权限类，匿名用户只读，登录用户可以操作

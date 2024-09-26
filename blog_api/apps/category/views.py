@@ -2,7 +2,7 @@ from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.mixins import ListModelMixin
+from rest_framework.mixins import ListModelMixin,RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly,AllowAny
 from rest_framework.response import Response
 
@@ -49,7 +49,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 
 # Create your views here.
-class FrontCategoryViewSet(ListModelMixin,viewsets.GenericViewSet):
+class FrontCategoryViewSet(RetrieveModelMixin,ListModelMixin,viewsets.GenericViewSet):
     queryset = Category.objects.filter(display=True).all()
     permission_classes = [AllowAny]
     serializer_class = FrontCategorySerializer

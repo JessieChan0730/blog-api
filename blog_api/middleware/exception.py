@@ -1,8 +1,11 @@
+from django.contrib.auth.models import User
 from django.utils.deprecation import MiddlewareMixin
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import exception_handler
 from rest_framework_simplejwt.exceptions import AuthenticationFailed, InvalidToken
+
+from blog_api.utils.email import send_email
 
 '''
 异常捕获中间件
@@ -12,9 +15,11 @@ from rest_framework_simplejwt.exceptions import AuthenticationFailed, InvalidTok
 
 class ExceptionHandlerMiddleware(MiddlewareMixin):
     def process_exception(self, request, exception):
+        # 只有一个用户，直接获取
+        user = User.objects.first()
         # TODO 发送邮件
         print(f"抓到你了：{str(exception)}")
-        # 直接转让到其他中间件
+        send_email(user.email, "后端服务异常", f"异常的具体信息为：{str(exception)}")
         return None
 
 
@@ -35,7 +40,4 @@ def custom_exception_handler(exc, context):
         return Response(data={
             'detail': str(exc)
         }, status=status.HTTP_401_UNAUTHORIZED)
-
-    # TODO 发送邮件
-    print(f"抓到你了：{str(exc)}")
     return exception_handler(exc, context)

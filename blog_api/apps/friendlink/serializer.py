@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from blog_api.utils.email import send_email
 from .models import FriendLink
 
 
@@ -33,7 +34,13 @@ class FriendLinkSerializer(serializers.Serializer):
         return friend_link
 
     def update(self, instance, validated_data):
-
+        status = validated_data.get('status')
+        email = validated_data.get('email')
+        if status == 'on_shelf':
+            send_email(target=email,title='友链审核结果通知',message='您在博客中申请的友情链接已经审核通过了，本网站已上线您的友情链接')
+        elif status == 'off_shelf':
+            send_email(target=email, title='友链审核结果通知',
+                       message='您在博客中申请的友情链接审核未通过，本网站已下架您的友情连接')
         for field in self.fields:
             if field in validated_data:
                 setattr(instance, field, validated_data[field])

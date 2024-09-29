@@ -1,11 +1,7 @@
-from django.conf import settings
-from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from jsonschema.exceptions import ValidationError
 from jsonschema.validators import validate
 from rest_framework import serializers
-from rest_framework.exceptions import AuthenticationFailed
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .const import json_schema
 

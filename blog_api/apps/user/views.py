@@ -80,13 +80,13 @@ class UserDetailViewSet(GenericViewSet):
 class FrontUserDetailViewSet(GenericViewSet):
     authentication_classes = [JWTAuthentication]  # 认证方式
     permission_classes = [AllowAny]  # 权限类，匿名用户只读，登录用户可以操作
-    queryset = UserDetail.objects.all().first()
+    queryset = UserDetail.objects.all()
     serializer_class = UserDetailSerializer
 
     @action(detail=False, methods=['GET'])
     def info(self, request: Request) -> Response:
         # 获取用户
-        user = self.get_queryset()
+        user = self.get_queryset().first()
         if user is not None:
             serializer = self.get_serializer(user)
             # return Response(data=ResultData.ok_200(data=serializer.data), status=status.HTTP_200_OK)

@@ -9,7 +9,7 @@ class PhotoWallSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['id']
         extra_kwargs = {
-            'image': {'use_url': True},
+            'image': {'use_url': False},
             'visible': {'default': True},
         }
 

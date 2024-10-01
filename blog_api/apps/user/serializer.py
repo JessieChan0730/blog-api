@@ -27,7 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserDetailSerializer(serializers.Serializer):
     nickname = serializers.CharField(required=False, min_length=1, max_length=15)
     signature = serializers.CharField(max_length=255, min_length=1, required=False)
-    avatar = serializers.ImageField(required=False, label="图片", use_url=True, error_messages={
+    avatar = serializers.ImageField(required=False, label="图片", use_url=False, error_messages={
         'invalid': '图片参数错误'
     })
     more_info = serializers.JSONField(required=False)

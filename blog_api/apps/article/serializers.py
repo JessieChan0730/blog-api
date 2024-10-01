@@ -17,7 +17,7 @@ class ArticleSerializer(serializers.Serializer):
     title = serializers.CharField(min_length=1, max_length=40, label='标题')
     content = serializers.CharField(allow_blank=False, allow_null=False, label='内容')
     intro = serializers.CharField(allow_blank=False, allow_null=False, max_length=200, label='简介')
-    cover_url = serializers.URLField(required=True, label='封面链接')
+    cover_url = serializers.CharField(required=True, label='封面链接')
     recommend = serializers.BooleanField(default=False, required=False, label='是否推荐')
     visible = serializers.BooleanField(label='是否可见', required=False, default=True)
     category_id = serializers.IntegerField(min_value=1, write_only=True)
@@ -125,7 +125,12 @@ class ArticleSerializer(serializers.Serializer):
 class ImageContentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImageContent
-        fields = ['image']
+        fields = "__all__"
+        extra_kwargs = {
+            'image': {
+                'use_url': False
+            }
+        }
 
 
 # 文章封面上传接口
@@ -133,14 +138,18 @@ class CoverSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cover
         fields = "__all__"
-
+        extra_kwargs = {
+            'cover': {
+                'use_url': False
+            }
+        }
 
 class FrontArticleSerializer(serializers.Serializer):
     id = serializers.IntegerField(min_value=1, read_only=True)
     title = serializers.CharField(min_length=1, max_length=40, label='标题')
     content = serializers.CharField(allow_blank=False, allow_null=False, label='内容')
     intro = serializers.CharField(allow_blank=False, allow_null=False, max_length=200, label='简介')
-    cover_url = serializers.URLField(required=True, label='封面链接')
+    cover_url = serializers.CharField(required=True, label='封面链接')
     recommend = serializers.BooleanField(default=False, required=False, label='是否推荐')
     category = CategorySerializer(read_only=True)
     tags = TagSerializer(read_only=True, many=True)

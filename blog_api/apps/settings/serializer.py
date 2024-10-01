@@ -34,9 +34,19 @@ class FrontCoverSerializer(serializers.ModelSerializer):
     class Meta:
         model = FrontCover
         fields = ['cover']
+        extra_kwargs = {
+            'cover': {
+                'use_url': False
+            }
+        }
 
 
 class AdminLogoSerializer(serializers.ModelSerializer):
     class Meta:
         model = AdminLogo
         fields = ['logo']
+        extra_kwargs = {
+            'logo': {
+                'use_url': False
+            }
+        }

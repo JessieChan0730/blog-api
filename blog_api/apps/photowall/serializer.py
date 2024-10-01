@@ -36,7 +36,3 @@ class PhotoWallUpdateSerializer(serializers.Serializer):
         instance.save()
         return instance
 
-
-# TODO 抽取到公共APP中
-class DeleteMultiple(serializers.Serializer):
-    ids = serializers.ListField(child=serializers.IntegerField(), required=True, allow_empty=False, min_length=1)

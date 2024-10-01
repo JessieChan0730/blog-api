@@ -9,7 +9,8 @@ from rest_framework.response import Response
 from .filter import CategoryFilter
 from .models import Category
 from .pagination import CategoryPagination
-from .serializer import CategorySerializer, DeleteMultiple, FrontCategorySerializer
+from .serializer import CategorySerializer, FrontCategorySerializer
+from blog_api.apps.common.serializer import DeleteMultiple
 
 
 # Create your views here.

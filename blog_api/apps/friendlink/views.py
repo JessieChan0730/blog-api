@@ -10,8 +10,8 @@ from rest_framework.viewsets import GenericViewSet
 from .filter import FriendLinkFilter
 from .models import FriendLink, FriendLinkStatement
 from .pagination import FriendLinkPagination
-from .serializer import FriendLinkSerializer, DeleteMultiple, FriendLinkStatementSerializer, FrontFriendLinkSerializer
-
+from .serializer import FriendLinkSerializer, FriendLinkStatementSerializer, FrontFriendLinkSerializer
+from blog_api.apps.common.serializer import DeleteMultiple
 
 # Create your views here.
 class FriendLinksViewSet(ListModelMixin, UpdateModelMixin, DestroyModelMixin, CreateModelMixin, GenericViewSet):

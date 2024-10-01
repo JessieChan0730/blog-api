@@ -8,7 +8,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .models import Tag
 from .pagination import TagPagination
-from .serializer import TagSerializer, DeleteMultiple
+from .serializer import TagSerializer
+from blog_api.apps.common.serializer import  DeleteMultiple
 
 
 class TagViewSet(viewsets.ModelViewSet):

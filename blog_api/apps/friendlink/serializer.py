@@ -37,7 +37,8 @@ class FriendLinkSerializer(serializers.Serializer):
         status = validated_data.get('status')
         email = validated_data.get('email')
         if status == 'on_shelf':
-            send_email(target=email,title='友链审核结果通知',message='您在博客中申请的友情链接已经审核通过了，本网站已上线您的友情链接')
+            send_email(target=email, title='友链审核结果通知',
+                       message='您在博客中申请的友情链接已经审核通过了，本网站已上线您的友情链接')
         elif status == 'off_shelf':
             send_email(target=email, title='友链审核结果通知',
                        message='您在博客中申请的友情链接审核未通过，本网站已下架您的友情连接')
@@ -46,11 +47,6 @@ class FriendLinkSerializer(serializers.Serializer):
                 setattr(instance, field, validated_data[field])
         instance.save()
         return instance
-
-
-# TODO 抽取到公共APP中
-class DeleteMultiple(serializers.Serializer):
-    ids = serializers.ListField(child=serializers.IntegerField(), required=True, allow_empty=False, min_length=1)
 
 
 class FriendLinkStatementSerializer(serializers.Serializer):

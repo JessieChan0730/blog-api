@@ -20,6 +20,3 @@ class TagSerializer(serializers.Serializer):
         instance.save()
         return instance
 
-
-class DeleteMultiple(serializers.Serializer):
-    ids = serializers.ListField(child=serializers.IntegerField(), required=True, allow_empty=False, min_length=1)

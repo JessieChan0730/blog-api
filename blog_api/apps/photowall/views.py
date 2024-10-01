@@ -6,10 +6,11 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from blog_api.apps.common.serializer import DeleteMultiple
 from .filter import PhotoWallFilter
 from .models import PhotoWall
 from .pagination import PhotoPagination, FrontPhotoPagination
-from .serializer import PhotoWallSerializer, PhotoWallUpdateSerializer, DeleteMultiple, FrontPhotoWallSerializer
+from .serializer import PhotoWallSerializer, PhotoWallUpdateSerializer, FrontPhotoWallSerializer
 
 
 # Create your views here.

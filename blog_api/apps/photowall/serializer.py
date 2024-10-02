@@ -20,7 +20,7 @@ class FrontPhotoWallSerializer(serializers.ModelSerializer):
         fields = ['id', 'image','description']
         read_only_fields = ['id']
         extra_kwargs = {
-            'image': {'use_url': True},
+            'image': {'use_url': False},
         }
 
 

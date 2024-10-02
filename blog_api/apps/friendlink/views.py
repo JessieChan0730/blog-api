@@ -12,9 +12,11 @@ from .models import FriendLink, FriendLinkStatement
 from .pagination import FriendLinkPagination
 from .serializer import FriendLinkSerializer, FriendLinkStatementSerializer, FrontFriendLinkSerializer
 from blog_api.apps.common.serializer import DeleteMultiple
+from blog_api.apps.common.mixin import DeleteMultipleModelMixin
+
 
 # Create your views here.
-class FriendLinksViewSet(ListModelMixin, UpdateModelMixin, DestroyModelMixin, CreateModelMixin, GenericViewSet):
+class FriendLinksViewSet(DeleteMultipleModelMixin,ListModelMixin, UpdateModelMixin, DestroyModelMixin, CreateModelMixin, GenericViewSet):
     queryset = FriendLink.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = FriendLinkPagination
@@ -26,19 +28,6 @@ class FriendLinksViewSet(ListModelMixin, UpdateModelMixin, DestroyModelMixin, Cr
         if self.action == "multiple":
             return DeleteMultiple
         return FriendLinkSerializer
-
-    # @swagger_auto_schema(
-    #     request_body=DeleteMultiple(),
-    #     responses={}
-    # )
-    # TODO 定义一个公共的 viewSet
-    @action(methods=['delete'], detail=False)
-    def multiple(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        ids = serializer.data.get('ids', [])
-        self.queryset.filter(id__in=ids).delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class FriendLinkStatementViewSet(GenericViewSet):

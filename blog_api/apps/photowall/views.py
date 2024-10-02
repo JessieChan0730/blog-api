@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from blog_api.apps.common.mixin import DeleteMultipleModelMixin
 from blog_api.apps.common.serializer import DeleteMultiple
 from .filter import PhotoWallFilter
 from .models import PhotoWall
@@ -14,7 +15,7 @@ from .serializer import PhotoWallSerializer, PhotoWallUpdateSerializer, FrontPho
 
 
 # Create your views here.
-class PhotoWallViewSet(DestroyModelMixin, CreateModelMixin, ListModelMixin, GenericViewSet):
+class PhotoWallViewSet(DeleteMultipleModelMixin, DestroyModelMixin, CreateModelMixin, ListModelMixin, GenericViewSet):
     queryset = PhotoWall.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = PhotoPagination
@@ -39,15 +40,6 @@ class PhotoWallViewSet(DestroyModelMixin, CreateModelMixin, ListModelMixin, Gene
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    # TODO 定义一个公共的 viewSet
-    @action(methods=['delete'], detail=False)
-    def multiple(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        ids = serializer.data.get('ids', [])
-        self.queryset.filter(id__in=ids).delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # 前端请求照片墙接口

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.utils.deprecation import MiddlewareMixin
 from rest_framework import status
@@ -17,9 +18,9 @@ class ExceptionHandlerMiddleware(MiddlewareMixin):
     def process_exception(self, request, exception):
         # 只有一个用户，直接获取
         user = User.objects.first()
-        # TODO 发送邮件
         print(f"抓到你了：{str(exception)}")
-        send_email(user.email, "后端服务异常", f"异常的具体信息为：{str(exception)}")
+        if not settings.DEBUG:
+            send_email(user.email, "后端服务异常", f"异常的具体信息为：{str(exception)}")
         return None
 
 

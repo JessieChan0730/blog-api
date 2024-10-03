@@ -1,3 +1,5 @@
+import traceback
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.utils.deprecation import MiddlewareMixin
@@ -20,7 +22,7 @@ class ExceptionHandlerMiddleware(MiddlewareMixin):
         user = User.objects.first()
         print(f"抓到你了：{str(exception)}")
         if not settings.DEBUG:
-            send_email(user.email, "后端服务异常", f"异常的具体信息为：{str(exception)}")
+            send_email(user.email, "后端服务异常", f"异常的具体信息为：{traceback.format_exc()}")
         return None
 
 

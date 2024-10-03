@@ -26,6 +26,7 @@ def create_user_detail(sender, instance, created, **kwargs):
         user_detail.user = instance
         user_detail.nickname = manager_info.get('nickname', '')
         user_detail.signature = manager_info.get('signature', '')
+        user_detail.avatar = manager_info.get('avatar', '')
         hobby = manager_info.get("hobby")
         media = manager_info.get("media")
         more_info = {

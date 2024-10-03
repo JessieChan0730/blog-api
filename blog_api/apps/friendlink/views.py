@@ -1,22 +1,23 @@
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import APIException
+from rest_framework.exceptions import APIException, NotFound
 from rest_framework.mixins import ListModelMixin, DestroyModelMixin, CreateModelMixin, UpdateModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from blog_api.apps.common.mixin import DeleteMultipleModelMixin
+from blog_api.apps.common.serializer import DeleteMultiple
 from .filter import FriendLinkFilter
 from .models import FriendLink, FriendLinkStatement
 from .pagination import FriendLinkPagination
 from .serializer import FriendLinkSerializer, FriendLinkStatementSerializer, FrontFriendLinkSerializer
-from blog_api.apps.common.serializer import DeleteMultiple
-from blog_api.apps.common.mixin import DeleteMultipleModelMixin
 
 
 # Create your views here.
-class FriendLinksViewSet(DeleteMultipleModelMixin,ListModelMixin, UpdateModelMixin, DestroyModelMixin, CreateModelMixin, GenericViewSet):
+class FriendLinksViewSet(DeleteMultipleModelMixin, ListModelMixin, UpdateModelMixin, DestroyModelMixin,
+                         CreateModelMixin, GenericViewSet):
     queryset = FriendLink.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = FriendLinkPagination
@@ -39,7 +40,7 @@ class FriendLinkStatementViewSet(GenericViewSet):
     def show(self, request):
         statement_ins = self.queryset.first()
         if not statement_ins:
-            raise APIException("友链页面信息不存在")
+            statement_ins = FriendLinkStatement.objects.create(statement='暂无信息')
         serializer = self.get_serializer(instance=statement_ins)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -48,7 +49,7 @@ class FriendLinkStatementViewSet(GenericViewSet):
         data = request.data
         statement_ins = self.queryset.first()
         if not statement_ins:
-            raise APIException("友链页面信息不存在")
+            raise NotFound('友链声明不存在')
         serializer = self.get_serializer(instance=statement_ins, data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -71,6 +72,6 @@ class FrontFriendLinkStatementViewSet(GenericViewSet):
     def show(self, request):
         statement_ins = self.queryset.first()
         if not statement_ins:
-            raise APIException("友链页面信息不存在")
+            raise NotFound("友链页面信息不存在")
         serializer = self.get_serializer(instance=statement_ins)
         return Response(serializer.data, status=status.HTTP_201_CREATED)

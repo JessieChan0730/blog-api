@@ -6,28 +6,31 @@
 	<img src="https://img.shields.io/badge/simplejwt-1.21.7-brightgreen">
 	<img src="https://img.shields.io/badge/license-MIT-blue">
 </p>
-## 简介
+
+![](https://foruda.gitee.com/images/1708618984641188532/a7cca095_716974.png "rainbow.png")
+
+## 🙂 简介
 
 基于Django5开发的博客系统，此仓库为「博客系统的后端接口」，目前博客处于起步阶段，很多功能暂未开发，当然此项目会持续维护，大部分功能会在后续版本中更新，如果喜欢的话不妨点个start支持
 
 前台仓库：https://github.com/JessieChan0730/blog-view  
 后台仓库：https://github.com/JessieChan0730/blog-admin
 
-## 相关库与框架
+## 🔨 相关库与框架
 
 1. 核心框架：[Django](https://github.com/django/django)
 2. Token库：[django-rest-framework-simplejwt](https://github.com/jazzband/djangorestframework-simplejwt)
 3. RestApi：[django-rest-framework](https://github.com/encode/django-rest-framework/tree/master)
 4. Api文档：[drf-yasg](https://github.com/axnsan12/drf-yasg)
 
-## 服务启动
+## 🚀 服务启动
 
 1. 安装依赖 `pip install -r requirements.txt`
 2. 在 dev.py 中配置好您的数据库信息(`DATABASES`中)，并且执行 `python manage.py migrate` 迁移到您的数据库；
 3. 在dev.py 配置博客的相关配置(`BLOG_SETTINGS`中)，如果无其他需求，此配置默认即可，随后执行 `python manage.py init_blog`
 4. 创建用户，执行 `python manage.py createsuperuser`，输入用户名，密码邮箱等，即可创建唯一的管理员用户，随后后台使用此用户名，密码登录即可。
 
-## 相关配置
+## ⚙ 相关配置
 
 配置文件由Django原本项目的单文件，拆分为了两个文件，`dev.py` `prod.py`，其中 `BLOG_SETTINGS` `SUPER_USER_SETTINGS`
 为此blog项目自定义配置，其余都为Django框架本身的配置。
@@ -79,7 +82,7 @@ EMAIL_USE_SSL = True  # 是否启用SSL
 
 > 具体邮箱授权码获取规则请查看此博客：[查看邮箱授权码](https://blog.csdn.net/KaiSarH/article/details/116724290)
 
-## 注意事项
+## 💡 注意事项
 
 - MySQL
   确保数据库字符集为utf8mb4,否则在后端插入emoji表情时，会产生数据库的插入数据的错误，具体设置请查看：[解决方案](https://blog.csdn.net/weixin_37989267/article/details/89019647)
@@ -87,8 +90,15 @@ EMAIL_USE_SSL = True  # 是否启用SSL
 - 自定义设置如果没有需求可以无需更改，在后台中可以通过设置界面进行更改
 - prod.py是用于生产环境，当修改了dev.py文件时，请自行同步的此文件内容。
 
-## 致谢
+## 📈 下一步计划
+
+- [ ] 评论功能
+- [ ] 系统日志
+
+## 🌹 致谢
+
 感谢提供支持的相关开源库和框架，也感谢您对此项目的支持。如果您对此项目还满意，不妨点一个Star，这对我来说很重要。
 
-## LICENSE
+## 📑 LICENSE
+
 [MIT](https://github.com/JessieChan0730/blog-api/blob/main/LICENSE)

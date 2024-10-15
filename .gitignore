@@ -1,3 +1,5 @@
 /logs
 /venv
 /.idea
+/blog_api/static/
+/blog_api/media/

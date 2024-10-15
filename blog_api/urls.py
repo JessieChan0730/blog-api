@@ -54,4 +54,5 @@ urlpatterns = [
                   path('api/', include("siteinfo.urls")),
                   path('api/', include("sumup.urls")),
                   path('api/', include("oauth.urls")),
+                  path('api/', include("comments.urls")),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

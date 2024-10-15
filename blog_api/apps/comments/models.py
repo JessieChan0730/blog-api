@@ -9,7 +9,7 @@ class Comments(models.Model):
     content = models.TextField(verbose_name="评论内容")
     avatar = models.URLField(verbose_name="头像链接")
     nickname = models.CharField(max_length=255, verbose_name="昵称")
-    parent_comment = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True, related_name="replies",
+    parent_comment = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="replies",
                                        verbose_name="评论")
     admin_comment = models.BooleanField(default=False, verbose_name="是否为作者回复")
     create_time = models.DateTimeField(auto_now_add=True,verbose_name="评论时间")

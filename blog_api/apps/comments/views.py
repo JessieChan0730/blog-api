@@ -8,13 +8,15 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from .models import Comments
+from .pagination import AdminCommentPagination
 from .serializer import AdminCommentSerializer
 
 
 class AdminCommentViewSet(ListModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet):
-    queryset = Comments.objects.all()
+    queryset = Comments.objects.all().filter(parent_comment=None)
     serializer_class = AdminCommentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = AdminCommentPagination
 
     @action(methods=['POST'], detail=False)
     def publish(self, request: Request) -> Response:

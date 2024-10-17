@@ -121,6 +121,13 @@ class ArticleSerializer(serializers.Serializer):
         return instance
 
 
+class ArticleSelectedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Article
+        fields = ['id', 'title']
+        read_only_fields = ['id', 'title']
+
+
 # 文章图片上传接口
 class ImageContentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -143,6 +150,7 @@ class CoverSerializer(serializers.ModelSerializer):
                 'use_url': False
             }
         }
+
 
 class FrontArticleSerializer(serializers.Serializer):
     id = serializers.IntegerField(min_value=1, read_only=True)

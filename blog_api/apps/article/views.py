@@ -12,7 +12,7 @@ from blog_api.utils.result.format import render_data
 from .filter import CategoryFilter
 from .models import Article, ImageContent, Cover
 from .pagination import ArticlePagination, FrontArticlePagination
-from .serializers import ArticleSerializer, ImageContentSerializer, CoverSerializer, FrontArticleSerializer
+from .serializers import ArticleSerializer, ImageContentSerializer, CoverSerializer, FrontArticleSerializer,ArticleSelectedSerializer
 
 
 # Create your views here.
@@ -28,10 +28,10 @@ class ArticleViewSet(ListModelMixin, RetrieveModelMixin, DestroyModelMixin, Gene
     ordering_fields = ('create_date', 'update_date',)
     filterset_class = CategoryFilter
 
-    # def get_serializer_class(self):
-    #     if self.action == 'modify':
-    #         return ArticleUpdateSerializer
-    #     return ArticleCreateSerializer
+    def get_serializer_class(self):
+        if self.action == 'selected':
+            return ArticleSelectedSerializer
+        return ArticleSerializer
 
     # 发表
     @action(methods=['post'], detail=False)
@@ -78,6 +78,12 @@ class ArticleViewSet(ListModelMixin, RetrieveModelMixin, DestroyModelMixin, Gene
         serializer = self.get_serializer(instance=articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @action(methods=["GET"], detail=False)
+    def selected(self, request: Request) -> Response:
+        query_set = self.get_queryset()
+        serializer = self.get_serializer(instance=query_set, many=True)
+        return Response(data=serializer.data,status=status.HTTP_200_OK)
+
 
 class ImageUploadViewSet(CreateModelMixin, GenericViewSet):
     queryset = ImageContent.objects.all()
@@ -93,7 +99,7 @@ class CoverViewSet(CreateModelMixin, GenericViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 
-class FrontArticleViewSet(ListModelMixin,RetrieveModelMixin, GenericViewSet):
+class FrontArticleViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = Article.objects.filter(visible=True).all()
     serializer_class = FrontArticleSerializer
     permission_classes = [AllowAny]  # 权限类，匿名用户只读，登录用户可以操作

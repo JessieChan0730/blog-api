@@ -45,7 +45,7 @@ class AdminCommentSerializer(serializers.ModelSerializer):
         email = User.objects.first().email
         content = validated_data.get("content")
         notification = validated_data.get("notification", True)
-        avatar = user_detail.avatar
+        avatar = user_detail.avatar.url
         parent_comment = validated_data.get("parent_comment")
         comments = Comments.objects.create(article_pk=article_pk, nickname=nickname, content=content, avatar=avatar,
                                            parent_comment=parent_comment, admin_comment=True, notification=notification,

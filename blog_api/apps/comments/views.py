@@ -1,4 +1,5 @@
 # Create your views here.
+from common.mixin import DeleteMultipleModelMixin,DeleteMultiple
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import status, filters
 from rest_framework.decorators import action
@@ -14,13 +15,18 @@ from .pagination import AdminCommentPagination
 from .serializer import AdminCommentSerializer
 
 
-class AdminCommentViewSet(ListModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet):
+class AdminCommentViewSet(ListModelMixin, RetrieveModelMixin, DestroyModelMixin, DeleteMultipleModelMixin,
+                          GenericViewSet):
     queryset = Comments.objects.all()
-    serializer_class = AdminCommentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = AdminCommentPagination
     filter_backends = (filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend,)
     filterset_class = ArticleTitleFilter
+
+    def get_serializer_class(self):
+        if self.action == "multiple":
+            return DeleteMultiple
+        return AdminCommentSerializer
 
     # 重新设置query_set
     def get_queryset(self):

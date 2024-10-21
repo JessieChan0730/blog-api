@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from user.models import UserDetail
 
+from blog_api.utils.email import send_email
 from .models import Comments
 
 
@@ -50,4 +51,20 @@ class AdminCommentSerializer(serializers.ModelSerializer):
         comments = Comments.objects.create(article_pk=article_pk, nickname=nickname, content=content, avatar=avatar,
                                            parent_comment=parent_comment, admin_comment=True, notification=notification,
                                            email=email)
+        # 发送邮件
+        if comments.parent_comment is not None and comments.parent_comment.notification:
+            message = f"{comments.nickname}给您回复：{comments.content}"
+            send_email(title="您在JBlog的评论收到回复啦", message=message,
+                       target=comments.parent_comment.email)
         return comments
+
+
+# 更新订阅状态序列化器
+class SubCommentSerializer(serializers.Serializer):
+    notification = serializers.BooleanField(required=True, label="是否订阅回复")
+
+    def update(self, instance, validated_data):
+        notification = validated_data.get("notification", instance.notification)
+        instance.notification = notification
+        instance.save()
+        return instance

@@ -1,5 +1,6 @@
 # Create your views here.
-from common.mixin import DeleteMultipleModelMixin, DeleteMultiple
+from blog_api.apps.common.mixin import DeleteMultipleModelMixin
+from blog_api.apps.common.serializer import DeleteMultiple
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import status, filters
 from rest_framework.decorators import action

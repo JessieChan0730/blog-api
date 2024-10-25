@@ -8,5 +8,5 @@ class AdminCommentPagination:
 
 
 @front_paging_setting(group_name="comments")
-class AdminFrontPagination:
+class FrontCommentPagination:
     pass

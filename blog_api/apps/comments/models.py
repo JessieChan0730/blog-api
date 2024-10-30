@@ -6,9 +6,9 @@ from django.db import models
 class Comments(models.Model):
     article_pk = models.ForeignKey(Article, on_delete=models.CASCADE, null=False, verbose_name="博客ID",
                                    related_name='comments')
-    content = models.TextField(verbose_name="评论内容")
+    content = models.TextField(verbose_name="评论内容",max_length=255)
     avatar = models.URLField(verbose_name="头像链接")
-    nickname = models.CharField(max_length=255, verbose_name="昵称")
+    nickname = models.CharField(max_length=30, verbose_name="昵称")
     email = models.EmailField(verbose_name="用户接收回复的邮箱")
     parent_comment = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="replies",
                                        verbose_name="评论")

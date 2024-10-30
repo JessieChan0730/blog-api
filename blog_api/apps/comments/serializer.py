@@ -3,6 +3,7 @@ from rest_framework import serializers
 from user.models import UserDetail
 
 from blog_api.utils.email import send_email
+from .filter import SensitiveFilter
 from .models import Comments
 
 
@@ -11,6 +12,10 @@ class BaseCommentsSerializer(serializers.ModelSerializer):
     reply_comments = serializers.SerializerMethodField()
     parent_comment_nickname = serializers.SerializerMethodField()
     article_name = serializers.SerializerMethodField()
+    Filter = SensitiveFilter()
+    # def __init__(self):
+    #     self.Filter = SensitiveFilter()
+    #     super(BaseCommentsSerializer, self).__init__()
 
     def get_reply_comments(self, obj):
         # 这里我们序列化 obj.replies.all()，即当前评论的所有子评论
@@ -48,7 +53,7 @@ class AdminCommentSerializer(BaseCommentsSerializer):
         article_pk = validated_data.get("article_pk")
         nickname = user_detail.nickname
         email = User.objects.first().email
-        content = validated_data.get("content")
+        content = self.Filter.replaceSensitiveWord(validated_data.get("content"))
         notification = validated_data.get("notification", True)
         avatar = user_detail.avatar.url
         parent_comment = validated_data.get("parent_comment")
@@ -78,7 +83,10 @@ class FrontCommentSerializer(BaseCommentsSerializer):
 
     def create(self, validated_data):
         notification = validated_data.pop("notification", True)
-        comments = Comments.objects.create(**validated_data, notification=notification)
+        content = self.Filter.replaceSensitiveWord(validated_data.pop("content"))
+        nickname = self.Filter.replaceSensitiveWord(validated_data.pop("nickname"))
+        comments = Comments.objects.create(**validated_data, notification=notification, content=content,
+                                           nickname=nickname)
         # 发送邮件
         if comments.parent_comment is not None and comments.parent_comment.notification:
             message = f"{comments.nickname}给您回复：{comments.content}"

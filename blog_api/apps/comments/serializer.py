@@ -13,6 +13,7 @@ class BaseCommentsSerializer(serializers.ModelSerializer):
     parent_comment_nickname = serializers.SerializerMethodField()
     article_name = serializers.SerializerMethodField()
     Filter = SensitiveFilter()
+
     # def __init__(self):
     #     self.Filter = SensitiveFilter()
     #     super(BaseCommentsSerializer, self).__init__()
@@ -104,3 +105,7 @@ class SubCommentSerializer(serializers.Serializer):
         instance.notification = notification
         instance.save()
         return instance
+
+
+class CommentsTotalQueryParams(serializers.Serializer):
+    article_id = serializers.IntegerField(required=True, label="文章ID")

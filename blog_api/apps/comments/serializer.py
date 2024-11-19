@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from user.models import UserDetail
 
-from blog_api.utils.email import send_email
+from blog_api.utils.email import send_html_email
 from .filter import SensitiveFilter
 from .models import Comments
 
@@ -30,6 +30,14 @@ class BaseCommentsSerializer(serializers.ModelSerializer):
 
     def get_article_name(self, obj):
         return obj.article_pk.title if obj.article_pk is not None else ""
+
+    def send_email(self, comments):
+        if comments.parent_comment is not None and comments.parent_comment.notification:
+            send_html_email(target=comments.parent_comment.email, subject="您在JBlog的评论收到回复啦",
+                            template="email/comment_email_template.html",
+                            context={"article_title": comments.article_pk.title, "article_id": comments.article_pk.pk,
+                                     "comment": comments.parent_comment.content, "nickname": comments.nickname,
+                                     "reply": comments.content})
 
 
 # 后端序列化器
@@ -62,10 +70,7 @@ class AdminCommentSerializer(BaseCommentsSerializer):
                                            parent_comment=parent_comment, admin_comment=True, notification=notification,
                                            email=email)
         # 发送邮件
-        if comments.parent_comment is not None and comments.parent_comment.notification:
-            message = f"{comments.nickname}给您回复：{comments.content}"
-            send_email(title="您在JBlog的评论收到回复啦", message=message,
-                       target=comments.parent_comment.email)
+        self.send_email(comments)
         return comments
 
 
@@ -89,10 +94,7 @@ class FrontCommentSerializer(BaseCommentsSerializer):
         comments = Comments.objects.create(**validated_data, notification=notification, content=content,
                                            nickname=nickname)
         # 发送邮件
-        if comments.parent_comment is not None and comments.parent_comment.notification:
-            message = f"{comments.nickname}给您回复：{comments.content}"
-            send_email(title="您在JBlog的评论收到回复啦", message=message,
-                       target=comments.parent_comment.email)
+        self.send_email(comments)
         return comments
 
 

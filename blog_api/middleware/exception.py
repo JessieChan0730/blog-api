@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import exception_handler
 from rest_framework_simplejwt.exceptions import AuthenticationFailed, InvalidToken
 
-from blog_api.utils.email import send_email
+from blog_api.utils.email import send_html_email
 
 '''
 异常捕获中间件
@@ -22,7 +22,10 @@ class ExceptionHandlerMiddleware(MiddlewareMixin):
         user = User.objects.first()
         print(f"抓到你了：{str(exception)}")
         if not settings.DEBUG:
-            send_email(user.email, "后端服务异常", f"异常的具体信息为：{traceback.format_exc()}")
+            send_html_email(target=user.email, subject="后端服务异常", template="email/exception_email_template.html",
+                            context={
+                                "error": traceback.format_exc()
+                            })
         return None
 
 

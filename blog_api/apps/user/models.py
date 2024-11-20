@@ -24,14 +24,16 @@ def create_user_detail(sender, instance, created, **kwargs):
         manager_info: dict = settings.SUPER_USER_SETTINGS
         user_detail = UserDetail()
         user_detail.user = instance
-        user_detail.nickname = manager_info.get('nickname', '')
-        user_detail.signature = manager_info.get('signature', '')
-        user_detail.avatar = manager_info.get('avatar', '')
-        hobby = manager_info.get("hobby")
-        media = manager_info.get("media")
+        user_detail.nickname = manager_info.get('NICKNAME', '')
+        user_detail.signature = manager_info.get('SIGNATURE', '')
+        user_detail.avatar = manager_info.get('AVATAR', '')
+        hobby = manager_info.get("HOBBY")
+        media = manager_info.get("MEDIA")
+        lower_hobby = [{key.lower(): value for key, value in item.items()} for item in hobby]
+        lower_media = {key.lower(): value for key, value in media.items()}
         more_info = {
-            "hobby": hobby,
-            "media": media,
+            "hobby": lower_hobby,
+            "media": lower_media,
         }
         user_detail.more_info = more_info
         user_detail.save()

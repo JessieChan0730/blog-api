@@ -18,7 +18,7 @@ from .serializer import AdminCommentSerializer, SubCommentSerializer, FrontComme
 
 class AdminCommentViewSet(ListModelMixin, RetrieveModelMixin, DestroyModelMixin, DeleteMultipleModelMixin,
                           GenericViewSet):
-    queryset = Comments.objects.all()
+    # queryset = Comments.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = AdminCommentPagination
     filter_backends = (filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend,)
@@ -33,6 +33,9 @@ class AdminCommentViewSet(ListModelMixin, RetrieveModelMixin, DestroyModelMixin,
 
     # 重新设置query_set
     def get_queryset(self):
+        # delete请求需要单独处理
+        if self.request.method == 'DELETE':
+            return Comments.objects.all()
         # 只返回 parent_comment 为 null 的顶层评论
         return Comments.objects.filter(parent_comment__isnull=True)
 

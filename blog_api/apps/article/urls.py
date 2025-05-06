@@ -1,3 +1,4 @@
+from django.urls import path
 from rest_framework import routers
 
 from . import views
@@ -11,6 +12,7 @@ router.register(r'image', views.ImageUploadViewSet)
 router.register(r'cover', views.CoverViewSet)
 router.register(r'front/article', views.FrontArticleViewSet, basename='front_article')
 urlpatterns = [
+    path('article/review', views.AIReviewAPI.as_view())
 ]
 
 urlpatterns += router.urls

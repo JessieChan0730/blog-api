@@ -1,10 +1,15 @@
+import json
+
+from django.conf import settings
 from django_filters.rest_framework.backends import DjangoFilterBackend
+from openai import OpenAI
 from rest_framework import status, filters
 from rest_framework.decorators import action
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, CreateModelMixin, DestroyModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -12,7 +17,9 @@ from blog_api.utils.result.format import render_data
 from .filter import CategoryFilter
 from .models import Article, ImageContent, Cover
 from .pagination import ArticlePagination, FrontArticlePagination
-from .serializers import ArticleSerializer, ImageContentSerializer, CoverSerializer, FrontArticleSerializer,ArticleSelectedSerializer
+from .prompt import system_role_prompt, user_role_content
+from .serializers import ArticleSerializer, ImageContentSerializer, CoverSerializer, FrontArticleSerializer, \
+    ArticleSelectedSerializer
 
 
 # Create your views here.
@@ -20,8 +27,8 @@ from .serializers import ArticleSerializer, ImageContentSerializer, CoverSeriali
 class ArticleViewSet(ListModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
-    authentication_classes = [JWTAuthentication]  # 认证方式
     permission_classes = [IsAuthenticatedOrReadOnly]  # 权限类，匿名用户只读，登录用户可以操作
+    authentication_classes = [JWTAuthentication]  # 认证方式
     pagination_class = ArticlePagination
     filter_backends = (filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend,)
     search_fields = ('title',)
@@ -82,7 +89,7 @@ class ArticleViewSet(ListModelMixin, RetrieveModelMixin, DestroyModelMixin, Gene
     def selected(self, request: Request) -> Response:
         query_set = self.get_queryset()
         serializer = self.get_serializer(instance=query_set, many=True)
-        return Response(data=serializer.data,status=status.HTTP_200_OK)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
 class ImageUploadViewSet(CreateModelMixin, GenericViewSet):
@@ -102,7 +109,7 @@ class CoverViewSet(CreateModelMixin, GenericViewSet):
 class FrontArticleViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = Article.objects.filter(visible=True).all()
     serializer_class = FrontArticleSerializer
-    permission_classes = [AllowAny]  # 权限类，匿名用户只读，登录用户可以操作
+    permission_classes = [AllowAny]
     pagination_class = FrontArticlePagination
     filter_backends = (filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend,)
     search_fields = ('title',)
@@ -116,3 +123,29 @@ class FrontArticleViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         serializer = self.get_serializer(instance=comm_article, many=True)
         return Response(data=serializer.data,
                         status=status.HTTP_200_OK)
+
+
+class AIReviewAPI(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]  # 权限类，匿名用户只读，登录用户可以操作
+    authentication_classes = [JWTAuthentication]  # 认证方式
+
+    def post(self, request: Request) -> Response:
+        content = request.data.get("content", "")
+        title = request.data.get("title", "")
+        if content == "" or title == "":
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        client = OpenAI(api_key=settings.DEEPSEEK_TOKEN, base_url="https://api.deepseek.com")
+        response = client.chat.completions.create(
+            model="deepseek-chat",
+            messages=[
+                {"role": "system", "content": system_role_prompt},
+                {"role": "user", "content": user_role_content(title, content)},
+            ],
+            response_format={
+                'type': 'json_object'
+            },
+            stream=False
+        )
+        ai_result = response.choices[0].message.content
+        result = json.loads(ai_result).get("results", [])
+        return Response(data=result, status=status.HTTP_200_OK)
